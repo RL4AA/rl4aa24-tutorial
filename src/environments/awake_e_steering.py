@@ -2,6 +2,8 @@ from typing import Literal, Optional, Union
 
 import gymnasium as gym
 import numpy as np
+import pandas as pd
+import torch
 from gymnasium import spaces
 
 from src.environments.base_backend import ESteeringBaseBackend
@@ -54,8 +56,6 @@ class AwakeESteering(gym.Env):
         self.backend.reset(options=backend_options)
 
         # TODO: Initialise magnets
-
-        # TODO: Initialise incoming beam?
 
         # Update anything in the accelerator (mainly for running simulations)
         self.backend.update()
@@ -183,15 +183,33 @@ class CheetahBackend(ESteeringBaseBackend):
 
         self.incoming_mode = incoming_mode
 
-        # Simulation setup
-        self.segment = cheetah.Segment.from_ocelot(
-            ocelot_lattice.cell, warnings=False, device="cpu"
-        ).subcell("AREASOLA1", "AREABSCR1")
+        # Load MADX .out file as DataFrame
+        df = pd.read_csv("electron_tt43.out", delim_whitespace=True, skiprows=45)
 
-        self.segment.AREABSCR1.resolution = (2448, 2040)
-        self.segment.AREABSCR1.pixel_size = (3.3198e-6, 2.4469e-6)
-        self.segment.AREABSCR1.binning = 1
-        self.segment.AREABSCR1.is_active = True
+        # Shift column names to the left
+        df.columns = df.columns[1:].tolist() + [""]
+        # Remove first row
+        df = df.iloc[1:]
+        # Drop last column
+        df = df.iloc[:, :-1]
+        # Convert all columns except for NAME and KEYWORD to float
+        df[df.columns[2:]] = df[df.columns[2:]].astype(float)
+
+        # Convert DataFrame to Cheetah segment
+        self.segment = cheetah.Segment(
+            elements=[self._convert_row_to_element(row) for row in df.itertuples()]
+        )
+        self.segment.BPM_430028.is_active = True
+        self.segment.BPM_430039.is_active = True
+        self.segment.BPM_430103.is_active = True
+        self.segment.BPM_430129.is_active = True
+        self.segment.BPM_430203.is_active = True
+        self.segment.BPM_430308.is_active = True
+        self.segment.BPM_412343.is_active = True
+        self.segment.BPM_412345.is_active = True
+        self.segment.BPM_412347.is_active = True
+        self.segment.BPM_412349.is_active = True
+        self.segment.BPM_412351.is_active = True
 
         # Spaces for domain randomisation
         self.incoming_beam_space = spaces.Box(
@@ -217,23 +235,86 @@ class CheetahBackend(ESteeringBaseBackend):
             ),
         )
 
+    def _convert_row_to_element(self, row) -> cheetah.Element:
+        """
+        Takes a row from the MADX output file and converts it into a Cheetah element.
+        """
+        sanitized_name = row.NAME.replace(".", "_").replace("$", "_")
+
+        if row.KEYWORD == "MARKER":
+            assert row.L == 0.0
+            return cheetah.Marker(name=sanitized_name)
+        elif row.KEYWORD == "DRIFT":
+            return cheetah.Drift(name=sanitized_name, length=torch.as_tensor(row.L))
+        elif row.KEYWORD == "MONITOR":
+            assert row.L == 0.0
+            assert sanitized_name.startswith("BPM")
+            return cheetah.BPM(name=sanitized_name)
+        elif row.KEYWORD == "KICKER":
+            # TODO: Horizontal or vertical?
+            return cheetah.HorizontalCorrector(
+                name=sanitized_name, length=torch.as_tensor(row.L)
+            )
+        elif row.KEYWORD == "QUADRUPOLE":
+            return cheetah.Quadrupole(
+                name=sanitized_name,
+                length=torch.as_tensor(row.L),
+                # k1=torch.as_tensor(row.K1L),
+                k1=torch.as_tensor(row.K1L / row.L),  # TODO: Correct?
+            )
+        elif row.KEYWORD == "INSTRUMENT":
+            return cheetah.Drift(name=sanitized_name, length=torch.as_tensor(row.L))
+        elif row.KEYWORD == "RBEND":
+            return cheetah.RBend(name=sanitized_name, length=torch.as_tensor(row.L))
+        else:
+            raise NotImplementedError(f"Unknown element type: {row.KEYWORD}")
+
     def get_magnets(self) -> np.ndarray:
         return np.array(
             [
-                self.segment.AREAMQZM1.k1,
-                self.segment.AREAMQZM2.k1,
-                self.segment.AREAMCVM1.angle,
-                self.segment.AREAMQZM3.k1,
-                self.segment.AREAMCHM1.angle,
+                self.segment.MCAW_430029.angle,
+                self.segment.MCAW_430040.angle,
+                self.segment.MCAW_430104.angle,
+                self.segment.MCAW_430130.angle,
+                self.segment.MCAW_430204.angle,
+                self.segment.MCAW_430309.angle,
+                self.segment.MCAW_412344.angle,
+                self.segment.MCAW_412345.angle,
+                self.segment.MCAW_412347.angle,
+                self.segment.MCAW_412349.angle,
+                self.segment.MCAW_412353.angle,
             ]
         )
 
     def set_magnets(self, values: np.ndarray) -> None:
-        self.segment.AREAMQZM1.k1 = values[0]
-        self.segment.AREAMQZM2.k1 = values[1]
-        self.segment.AREAMCVM1.angle = values[2]
-        self.segment.AREAMQZM3.k1 = values[3]
-        self.segment.AREAMCHM1.angle = values[4]
+        self.segment.MCAW_430029.angle = torch.as_tensor(values[0])
+        self.segment.MCAW_430040.angle = torch.as_tensor(values[1])
+        self.segment.MCAW_430104.angle = torch.as_tensor(values[2])
+        self.segment.MCAW_430130.angle = torch.as_tensor(values[3])
+        self.segment.MCAW_430204.angle = torch.as_tensor(values[4])
+        self.segment.MCAW_430309.angle = torch.as_tensor(values[5])
+        self.segment.MCAW_412344.angle = torch.as_tensor(values[6])
+        self.segment.MCAW_412345.angle = torch.as_tensor(values[7])
+        self.segment.MCAW_412347.angle = torch.as_tensor(values[8])
+        self.segment.MCAW_412349.angle = torch.as_tensor(values[9])
+        self.segment.MCAW_412353.angle = torch.as_tensor(values[10])
+
+    def get_bpms(self) -> np.ndarray:
+        return np.array(  # TODO: Currently only reads mu_x for each BPM
+            [
+                self.segment.BPM_430028.reading[0],
+                self.segment.BPM_430039.reading[0],
+                self.segment.BPM_430103.reading[0],
+                self.segment.BPM_430129.reading[0],
+                self.segment.BPM_430203.reading[0],
+                self.segment.BPM_430308.reading[0],
+                self.segment.BPM_412343.reading[0],
+                self.segment.BPM_412345.reading[0],
+                self.segment.BPM_412347.reading[0],
+                self.segment.BPM_412349.reading[0],
+                self.segment.BPM_412351.reading[0],
+            ]
+        )
 
     def reset(self, options=None) -> None:
         preprocessed_options = self._preprocess_reset_options(options)
@@ -275,19 +356,6 @@ class CheetahBackend(ESteeringBaseBackend):
 
     def update(self) -> None:
         self.segment.track(self.incoming)
-
-    def get_beam_parameters(self) -> np.ndarray:
-        if self.simulate_finite_screen and not self.is_beam_on_screen():
-            return np.array([0, 3.5, 0, 2.2])  # Estimates from real bo_sim data
-        else:
-            return np.array(
-                [
-                    self.segment.AREABSCR1.read_beam.mu_x,
-                    self.segment.AREABSCR1.read_beam.sigma_x,
-                    self.segment.AREABSCR1.read_beam.mu_y,
-                    self.segment.AREABSCR1.read_beam.sigma_y,
-                ]
-            )
 
     def get_incoming_parameters(self) -> np.ndarray:
         # Parameters of incoming are typed out to guarantee their order, as the
