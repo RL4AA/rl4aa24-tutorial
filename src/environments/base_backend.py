@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 
 
-class TransverseTuningBaseBackend(ABC):
+class ESteeringBaseBackend(ABC):
     """Abstract class for a backend imlementation."""
 
     def setup(self) -> None:

@@ -3,15 +3,15 @@ from typing import Literal, Optional, Union
 import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
-from src.environments.base_backend import TransverseTuningBaseBackend
+
+from src.environments.base_backend import ESteeringBaseBackend
 
 
-class TransverseTuning(gym.Env):
+class AwakeESteering(gym.Env):
     """
-    Transverse beam parameter tuning environment for the ARES Experimental Area.
+    Environment for electron steering on the AWAKE beam line.
 
-    Magnets: AREAMQZM1, AREAMQZM2, AREAMCVM1, AREAMQZM3, AREAMCHM1
-    Screen: AREABSCR1
+    Magnets: TODO
 
     :param backend: Backend for communication with either a simulation or the control
         system.
@@ -163,7 +163,7 @@ class TransverseTuning(gym.Env):
         pass
 
 
-class CheetahBackend(TransverseTuningBaseBackend):
+class CheetahBackend(ESteeringBaseBackend):
     """
     Cheetah simulation backend.
 
