@@ -40,6 +40,16 @@ class ESteeringBaseBackend(ABC):
         """
         raise NotImplementedError
 
+    @abstractmethod
+    def get_bpms(self) -> np.ndarray:
+        """
+        Get the readings from the BPMs as a NumPy array in order as the BPMs appear in
+        the beamline.
+
+        Override with backend-specific imlementation. Must be implemented!
+        """
+        raise NotImplementedError
+
     def reset(self) -> None:
         """
         Code that should set the accelerator up for a new episode. Run when the `reset`
@@ -60,16 +70,6 @@ class ESteeringBaseBackend(ABC):
         Override with backend-specific imlementation. Optional.
         """
         pass
-
-    @abstractmethod
-    def get_beam_parameters(self) -> np.ndarray:
-        """
-        Get the beam parameters measured on the diagnostic screen as NumPy array grouped
-        by dimension (e.g. mu_x, sigma_x, mu_y, sigma_y).
-
-        Override with backend-specific imlementation. Must be implemented!
-        """
-        raise NotImplementedError
 
     def get_incoming_parameters(self) -> np.ndarray:
         """
