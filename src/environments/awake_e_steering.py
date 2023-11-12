@@ -32,7 +32,11 @@ class AwakeESteering(gym.Env):
         render_mode: Optional[Literal["human", "rgb_array"]] = None,
     ) -> None:
         self.observation_space = None  # TODO: Define observation space
-        self.action_space = None  # TODO: Define action space
+        self.action_space = spaces.Box(
+            low=-1e-4, high=1e-4, shape=(11,), dtype=np.float32
+        )
+
+        # TODO: Figure out thing with having to remove a BPM and a steerer
 
         # Setup particle simulation or control system backend
         if backend == "cheetah":
