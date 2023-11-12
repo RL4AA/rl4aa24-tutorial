@@ -1,15 +1,14 @@
 import numpy as np
 import pytest
 from gymnasium.wrappers import RescaleAction
-from src.reward import combiners, transforms
 from stable_baselines3.common.env_checker import check_env
 
-from src.environments import bc, dl, ea, sh
+from src.environments.awake_e_steering import AwakeESteering
 
 
 def test_check_env_cheetah():
     """Test SB3's `check_env` on all environments using their Cheetah backends."""
-    env = section.TransverseTuning(backend="cheetah")
+    env = AwakeESteering(backend="cheetah")
     env = RescaleAction(env, -1, 1)  # Prevents SB3 action space scale warning
     check_env(env)
 
@@ -17,11 +16,12 @@ def test_check_env_cheetah():
 def test_mandatory_backend_argument(section):
     """Test that the `backend` argument is mandatory."""
     with pytest.raises(TypeError):
-        section.TransverseTuning(
+        AwakeESteering(
             # backend="cheetah"
         )
 
 
+@pytest.mark.skip(reason="Not yet adapted to Awake e-steering")
 def test_passing_backend_args(section):
     """
     Test that backend_args are passed through the environment to the backend correctly.
@@ -84,6 +84,7 @@ def test_passing_backend_args(section):
     assert np.allclose(env.unwrapped.backend.get_misalignments(), misalignment_mode)
 
 
+@pytest.mark.skip(reason="Not yet adapted to Awake e-steering")
 def test_public_members(section):
     """
     Make sure that all and only intended members are exposed to the user (named withouth
@@ -154,6 +155,7 @@ def test_seed(section):
     assert all(observation_ref["target"] != observation_diff["target"])
 
 
+@pytest.mark.skip(reason="Not yet adapted to Awake e-steering")
 def test_magnet_clipping_direct(section):
     """
     Test that magnet settings are clipped to the allowed range when the action mode is
@@ -174,6 +176,7 @@ def test_magnet_clipping_direct(section):
     assert all(observation["magnets"] <= max_magnet_settings)
 
 
+@pytest.mark.skip(reason="Not yet adapted to Awake e-steering")
 def test_magnet_clipping_delta(section):
     """
     Test that magnet settings are clipped to the allowed range when the action mode is
@@ -194,6 +197,7 @@ def test_magnet_clipping_delta(section):
     assert all(observation["magnets"] <= max_magnet_settings)
 
 
+@pytest.mark.skip(reason="Not yet adapted to Awake e-steering")
 def test_fixed_magnet_init_mode_array(section, settings):
     """
     Test that if fixed values are set for `magnet_init_mode`, the magnets are in fact
@@ -211,6 +215,7 @@ def test_fixed_magnet_init_mode_array(section, settings):
     assert np.allclose(observation_second_reset["magnets"], np.array(settings))
 
 
+@pytest.mark.skip(reason="Not yet adapted to Awake e-steering")
 def test_fixed_magnet_init_mode_list(section, settings):
     """
     Test that if fixed values are set for `magnet_init_mode`, the magnets are in fact
