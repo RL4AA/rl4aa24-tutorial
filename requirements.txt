@@ -1,0 +1,6 @@
+black
+git+https://github.com/desy-ml/cheetah.git@101-error-when-using-bpm-with-parameter-beam
+flake8
+isort
+jupyter
+pytest
