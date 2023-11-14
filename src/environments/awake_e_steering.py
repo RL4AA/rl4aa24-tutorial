@@ -125,7 +125,7 @@ class AwakeESteering(gym.Env):
 
     def _get_reward(self) -> float:
         rms = np.sqrt(np.mean(np.square(self.backend.get_bpms())))
-        return -rms
+        return -100 * rms
 
     def render(self):
         if self.render_mode == "rgb_array":
