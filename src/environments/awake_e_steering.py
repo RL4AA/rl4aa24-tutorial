@@ -61,9 +61,6 @@ class AwakeESteering(gym.Env):
         # Update anything in the accelerator (mainly for running simulations)
         self.backend.update()
 
-        # Set reward variables to None, so that _get_reward works properly
-        self._some_reward = None  # TODO: Replace with actual reward variables
-
         observation = self._get_obs()
         info = self._get_info()
 
@@ -127,7 +124,8 @@ class AwakeESteering(gym.Env):
         self.backend.set_magnets(new_settings)
 
     def _get_reward(self) -> float:
-        return 0.0  # TODO: Replace with actual reward
+        rms = np.sqrt(np.mean(np.square(self.backend.get_bpms())))
+        return -rms
 
     def render(self):
         if self.render_mode == "rgb_array":
