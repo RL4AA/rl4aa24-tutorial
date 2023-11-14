@@ -1,15 +1,17 @@
 import pytest
 
-from src.environments import bc, dl, ea, sh
+from src.environments.awake_e_steering import AwakeESteering
 
 
-@pytest.mark.skip(reason="Random seeds are not fixed yet")
+@pytest.mark.skip(
+    reason="Random seeds are not fixed yet and this test is not yet adapted to Awake."
+)
 def test_seed():
     """
     Test that using a fixed seed produces reproducible initial magnet settings and
     target beams, while different seeds produce different values.
     """
-    env = section.TransverseTuning(
+    env = AwakeESteering(
         backend="cheetah",
         backend_args={"incoming_mode": "random", "misalignment_mode": "random"},
     )

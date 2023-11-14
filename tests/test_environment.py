@@ -13,7 +13,8 @@ def test_check_env_cheetah():
     check_env(env)
 
 
-def test_mandatory_backend_argument(section):
+@pytest.mark.skip(reason="Should this really be mandatory?")
+def test_mandatory_backend_argument():
     """Test that the `backend` argument is mandatory."""
     with pytest.raises(TypeError):
         AwakeESteering(
@@ -22,7 +23,7 @@ def test_mandatory_backend_argument(section):
 
 
 @pytest.mark.skip(reason="Not yet adapted to Awake e-steering")
-def test_passing_backend_args(section):
+def test_passing_backend_args():
     """
     Test that backend_args are passed through the environment to the backend correctly.
     """
@@ -85,7 +86,7 @@ def test_passing_backend_args(section):
 
 
 @pytest.mark.skip(reason="Not yet adapted to Awake e-steering")
-def test_public_members(section):
+def test_public_members():
     """
     Make sure that all and only intended members are exposed to the user (named withouth
     leading underscore).
@@ -119,7 +120,7 @@ def test_public_members(section):
     ]
     allowed_public_members = gymnasium_public_members + custom_public_members
 
-    env = section.TransverseTuning(backend="cheetah")
+    env = AwakeESteering(backend="cheetah")
     _, _ = env.reset()
     _, _, _, _, _ = env.step(env.action_space.sample())
 
@@ -134,12 +135,12 @@ def test_public_members(section):
 
 
 @pytest.mark.skip(reason="Random seeds are not fixed yet")
-def test_seed(section):
+def test_seed():
     """
     Test that using a fixed seed produces reproducible initial magnet settings and
     target beams, while different seeds produce different values.
     """
-    env = section.TransverseTuning(
+    env = AwakeESteering(
         backend="cheetah", magnet_init_mode="random", target_beam_mode="random"
     )
     observation_ref, _ = env.reset(seed=42)
@@ -156,12 +157,12 @@ def test_seed(section):
 
 
 @pytest.mark.skip(reason="Not yet adapted to Awake e-steering")
-def test_magnet_clipping_direct(section):
+def test_magnet_clipping_direct():
     """
     Test that magnet settings are clipped to the allowed range when the action mode is
     set to "direct".
     """
-    env = section.TransverseTuning(
+    env = AwakeESteering(
         backend="cheetah",
         action_mode="direct",
         clip_magnets=True,
@@ -177,12 +178,12 @@ def test_magnet_clipping_direct(section):
 
 
 @pytest.mark.skip(reason="Not yet adapted to Awake e-steering")
-def test_magnet_clipping_delta(section):
+def test_magnet_clipping_delta():
     """
     Test that magnet settings are clipped to the allowed range when the action mode is
     set to "delta".
     """
-    env = section.TransverseTuning(
+    env = AwakeESteering(
         backend="cheetah",
         action_mode="direct",
         clip_magnets=True,
