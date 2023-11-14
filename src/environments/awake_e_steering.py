@@ -105,7 +105,8 @@ class AwakeESteering(gym.Env):
         return env_options, backend_options
 
     def _get_terminated(self):
-        return False  # TODO: Replace with actual termination condition
+        rms = np.sqrt(np.mean(np.square(self.backend.get_bpms())))
+        return rms < 0.0016  # 1.6 mm
 
     def _get_obs(self):
         return self.backend.get_bpms()
@@ -118,7 +119,6 @@ class AwakeESteering(gym.Env):
 
     def _take_action(self, action: np.ndarray) -> None:
         """Take `action` according to the environment's configuration."""
-
         self._previous_magnet_settings = self.backend.get_magnets()
         new_settings = self._previous_magnet_settings + action
         self.backend.set_magnets(new_settings)
