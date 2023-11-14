@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Literal, Optional, Union
 
 import gymnasium as gym
@@ -31,12 +32,8 @@ class AwakeESteering(gym.Env):
         backend_args: dict = {},
         render_mode: Optional[Literal["human", "rgb_array"]] = None,
     ) -> None:
-        self.observation_space = None  # TODO: Define observation space
-        self.action_space = spaces.Box(
-            low=-1e-4, high=1e-4, shape=(11,), dtype=np.float32
-        )
-
-        # TODO: Figure out thing with having to remove a BPM and a steerer
+        self.observation_space = spaces.Box(low=-1e-2, high=1e-2, shape=(10,))
+        self.action_space = spaces.Box(low=-3e-4, high=3e-4, shape=(10,))
 
         # Setup particle simulation or control system backend
         if backend == "cheetah":
@@ -114,44 +111,20 @@ class AwakeESteering(gym.Env):
         return False  # TODO: Replace with actual termination condition
 
     def _get_obs(self):
-        return {}  # TODO: Replace with actual observation
+        return self.backend.get_bpms()
 
     def _get_info(self):
         return {
-            # TODO: Replace with actual info
+            # Other info could go here
             "backend_info": self.backend.get_info(),  # Info specific to the backend
         }
 
     def _take_action(self, action: np.ndarray) -> None:
         """Take `action` according to the environment's configuration."""
 
-        # TODO: Replace with actual taking of action
-
         self._previous_magnet_settings = self.backend.get_magnets()
-
-        if self.action_mode == "direct":
-            new_settings = action
-            if self.clip_magnets:
-                new_settings = self._clip_magnets_to_power_supply_limits(new_settings)
-            self.backend.set_magnets(new_settings)
-        elif self.action_mode == "delta":
-            new_settings = self._previous_magnet_settings + action
-            if self.clip_magnets:
-                new_settings = self._clip_magnets_to_power_supply_limits(new_settings)
-            self.backend.set_magnets(new_settings)
-        else:
-            raise ValueError(f'Invalid value "{self.action_mode}" for action_mode')
-
-    def _clip_magnets_to_power_supply_limits(self, magnets: np.ndarray) -> np.ndarray:
-        """Clip `magnets` to limits imposed by the magnets's power supplies."""
-
-        # TODO: Check if this is actually needed
-
-        return np.clip(
-            magnets,
-            self.observation_space["magnets"].low,
-            self.observation_space["magnets"].high,
-        )
+        new_settings = self._previous_magnet_settings + action
+        self.backend.set_magnets(new_settings)
 
     def _get_reward(self) -> float:
         return 0.0  # TODO: Replace with actual reward
@@ -188,7 +161,9 @@ class CheetahBackend(ESteeringBaseBackend):
         self.incoming_mode = incoming_mode
 
         # Load MADX .out file as DataFrame
-        df = pd.read_csv("electron_tt43.out", delim_whitespace=True, skiprows=45)
+        # TODO: Switch to LatticeJSON at some point
+        outfile_path = Path(__file__).parent / "electron_tt43.out"
+        df = pd.read_csv(outfile_path, delim_whitespace=True, skiprows=45)
 
         # Shift column names to the left
         df.columns = df.columns[1:].tolist() + [""]
@@ -239,7 +214,7 @@ class CheetahBackend(ESteeringBaseBackend):
             ),
         )
 
-    def _convert_row_to_element(self, row) -> cheetah.Element:
+    def _convert_row_to_element(self, row) -> "cheetah.Element":
         """
         Takes a row from the MADX output file and converts it into a Cheetah element.
         """
@@ -254,8 +229,7 @@ class CheetahBackend(ESteeringBaseBackend):
             assert row.L == 0.0
             assert sanitized_name.startswith("BPM")
             return cheetah.BPM(name=sanitized_name)
-        elif row.KEYWORD == "KICKER":
-            # TODO: Horizontal or vertical?
+        elif row.KEYWORD == "KICKER":  # Hardcoded to be horizontal
             return cheetah.HorizontalCorrector(
                 name=sanitized_name, length=torch.as_tensor(row.L)
             )
@@ -276,37 +250,34 @@ class CheetahBackend(ESteeringBaseBackend):
     def get_magnets(self) -> np.ndarray:
         return np.array(
             [
-                self.segment.MCAW_430029.angle,
-                self.segment.MCAW_430040.angle,
-                self.segment.MCAW_430104.angle,
-                self.segment.MCAW_430130.angle,
-                self.segment.MCAW_430204.angle,
-                self.segment.MCAW_430309.angle,
-                self.segment.MCAW_412344.angle,
-                self.segment.MCAW_412345.angle,
-                self.segment.MCAW_412347.angle,
-                self.segment.MCAW_412349.angle,
-                self.segment.MCAW_412353.angle,
+                self.segment.MCAWA_430029.angle,
+                self.segment.MCAWA_430040.angle,
+                self.segment.MCAWA_430104.angle,
+                self.segment.MCAWA_430130.angle,
+                self.segment.MCAWA_430204.angle,
+                self.segment.MCAWA_430309.angle,
+                self.segment.MCAWA_412344.angle,
+                self.segment.MCAWA_412345.angle,
+                self.segment.MCAWA_412347.angle,
+                self.segment.MCAWA_412349.angle,
             ]
         )
 
     def set_magnets(self, values: np.ndarray) -> None:
-        self.segment.MCAW_430029.angle = torch.as_tensor(values[0])
-        self.segment.MCAW_430040.angle = torch.as_tensor(values[1])
-        self.segment.MCAW_430104.angle = torch.as_tensor(values[2])
-        self.segment.MCAW_430130.angle = torch.as_tensor(values[3])
-        self.segment.MCAW_430204.angle = torch.as_tensor(values[4])
-        self.segment.MCAW_430309.angle = torch.as_tensor(values[5])
-        self.segment.MCAW_412344.angle = torch.as_tensor(values[6])
-        self.segment.MCAW_412345.angle = torch.as_tensor(values[7])
-        self.segment.MCAW_412347.angle = torch.as_tensor(values[8])
-        self.segment.MCAW_412349.angle = torch.as_tensor(values[9])
-        self.segment.MCAW_412353.angle = torch.as_tensor(values[10])
+        self.segment.MCAWA_430029.angle = torch.as_tensor(values[0])
+        self.segment.MCAWA_430040.angle = torch.as_tensor(values[1])
+        self.segment.MCAWA_430104.angle = torch.as_tensor(values[2])
+        self.segment.MCAWA_430130.angle = torch.as_tensor(values[3])
+        self.segment.MCAWA_430204.angle = torch.as_tensor(values[4])
+        self.segment.MCAWA_430309.angle = torch.as_tensor(values[5])
+        self.segment.MCAWA_412344.angle = torch.as_tensor(values[6])
+        self.segment.MCAWA_412345.angle = torch.as_tensor(values[7])
+        self.segment.MCAWA_412347.angle = torch.as_tensor(values[8])
+        self.segment.MCAWA_412349.angle = torch.as_tensor(values[9])
 
     def get_bpms(self) -> np.ndarray:
-        return np.array(  # TODO: Currently only reads mu_x for each BPM
+        return np.array(
             [
-                self.segment.BPM_430028.reading[0],
                 self.segment.BPM_430039.reading[0],
                 self.segment.BPM_430103.reading[0],
                 self.segment.BPM_430129.reading[0],
@@ -332,17 +303,17 @@ class CheetahBackend(ESteeringBaseBackend):
             incoming_parameters = self.incoming_beam_space.sample()
 
         self.incoming = cheetah.ParameterBeam.from_parameters(
-            energy=incoming_parameters[0],
-            mu_x=incoming_parameters[1],
-            mu_xp=incoming_parameters[2],
-            mu_y=incoming_parameters[3],
-            mu_yp=incoming_parameters[4],
-            sigma_x=incoming_parameters[5],
-            sigma_xp=incoming_parameters[6],
-            sigma_y=incoming_parameters[7],
-            sigma_yp=incoming_parameters[8],
-            sigma_s=incoming_parameters[9],
-            sigma_p=incoming_parameters[10],
+            energy=torch.tensor(incoming_parameters[0]),
+            mu_x=torch.tensor(incoming_parameters[1]),
+            mu_xp=torch.tensor(incoming_parameters[2]),
+            mu_y=torch.tensor(incoming_parameters[3]),
+            mu_yp=torch.tensor(incoming_parameters[4]),
+            sigma_x=torch.tensor(incoming_parameters[5]),
+            sigma_xp=torch.tensor(incoming_parameters[6]),
+            sigma_y=torch.tensor(incoming_parameters[7]),
+            sigma_yp=torch.tensor(incoming_parameters[8]),
+            sigma_s=torch.tensor(incoming_parameters[9]),
+            sigma_p=torch.tensor(incoming_parameters[10]),
         )
 
     def _preprocess_reset_options(self, options: dict) -> dict:
