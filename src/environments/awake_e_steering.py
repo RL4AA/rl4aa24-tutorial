@@ -42,7 +42,7 @@ class AwakeESteering(gym.Env):
             raise ValueError(f'Invalid value "{backend}" for backend')
 
         # Utility variables
-        # TODO: Define utility variables
+        # -> Put utility variables here once they are needed
 
         # Setup rendering according to Gymnasium manual
         assert render_mode is None or render_mode in self.metadata["render_modes"]
@@ -56,7 +56,8 @@ class AwakeESteering(gym.Env):
 
         self.backend.reset(options=backend_options)
 
-        # TODO: Initialise magnets
+        # Initialise magnets
+        self.backend.set_magnets(np.zeros(10))
 
         # Update anything in the accelerator (mainly for running simulations)
         self.backend.update()
