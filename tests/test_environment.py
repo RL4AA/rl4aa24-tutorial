@@ -13,16 +13,6 @@ def test_check_env_cheetah():
     check_env(env)
 
 
-@pytest.mark.skip(reason="Should this really be mandatory?")
-def test_mandatory_backend_argument():
-    """Test that the `backend` argument is mandatory."""
-    with pytest.raises(TypeError):
-        AwakeESteering(
-            # backend="cheetah"
-        )
-
-
-@pytest.mark.skip(reason="Not yet adapted to Awake e-steering")
 def test_passing_backend_args():
     """
     Test that backend_args are passed through the environment to the backend correctly.
@@ -40,28 +30,16 @@ def test_passing_backend_args():
             5e-5,
             5e-5,
             1e-3,
-        ]
+        ],
+        dtype=np.float32,
     )
-    if section in [ea, bc]:  # EA and BC with 3 quadrupoles + screen
-        misalignment_mode = np.array([-1e-4, 1e-4, -1e-5, 1e-5, 3e-4, 0, -3e-4, 9e-5])
-    else:  # DL and SH with 2 quadrupoles + screen
-        misalignment_mode = np.array([-1e-4, 1e-4, -1e-5, 1e-5, -3e-4, 9e-5])
 
-    simulate_finite_screen = True
-
-    env = section.TransverseTuning(
-        backend="cheetah",
-        backend_args={
-            "incoming_mode": incoming_mode,
-            "misalignment_mode": misalignment_mode,
-            "simulate_finite_screen": simulate_finite_screen,
-        },
+    env = AwakeESteering(
+        backend="cheetah", backend_args={"incoming_mode": incoming_mode}
     )
 
     # Test that config is passed through to backend
     assert all(env.unwrapped.backend.incoming_mode == incoming_mode)
-    assert all(env.unwrapped.backend.misalignment_mode == misalignment_mode)
-    assert env.unwrapped.backend.simulate_finite_screen == simulate_finite_screen
 
     # Test that configs are used correctly
     _, _ = env.reset()
@@ -82,7 +60,6 @@ def test_passing_backend_args():
     )
 
     assert np.allclose(incoming_parameters, incoming_mode)
-    assert np.allclose(env.unwrapped.backend.get_misalignments(), misalignment_mode)
 
 
 @pytest.mark.skip(reason="Not yet adapted to Awake e-steering")

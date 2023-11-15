@@ -32,7 +32,9 @@ class AwakeESteering(gym.Env):
         backend_args: dict = {},
         render_mode: Optional[Literal["human", "rgb_array"]] = None,
     ) -> None:
-        self.observation_space = spaces.Box(low=-1e-2, high=1e-2, shape=(10,))
+        self.observation_space = spaces.Box(
+            low=-np.inf, high=np.inf, shape=(10,)
+        )  # 1e-2
         self.action_space = spaces.Box(low=-3e-4, high=3e-4, shape=(10,))
 
         # Setup particle simulation or control system backend
@@ -105,14 +107,14 @@ class AwakeESteering(gym.Env):
 
         return env_options, backend_options
 
-    def _get_terminated(self):
+    def _get_terminated(self) -> bool:
         rms = np.sqrt(np.mean(np.square(self.backend.get_bpms())))
-        return rms < 0.0016  # 1.6 mm
+        return bool(rms < 0.0016)  # 1.6 mm
 
-    def _get_obs(self):
+    def _get_obs(self) -> Union[np.ndarray, dict]:
         return self.backend.get_bpms()
 
-    def _get_info(self):
+    def _get_info(self) -> dict:
         return {
             # Other info could go here
             "backend_info": self.backend.get_info(),  # Info specific to the backend

@@ -1,4 +1,5 @@
 import numpy as np
+from gymnasium import spaces
 from gymnasium.wrappers import RescaleAction
 from stable_baselines3.common.env_checker import check_env
 
@@ -9,7 +10,7 @@ from src.wrappers import RescaleObservation
 def test_check_env():
     """Test that the `RecordEpisode` wrapper throws no exceptions under `check_env`."""
     env = AwakeESteering(backend="cheetah")
-    env = RescaleObservation(env, -1, 1)
+    env = RescaleObservation(env, -1, 1, assumed_space=spaces.Box(-1e-2, 1e-2, (10,)))
     env = RescaleAction(env, -1, 1)
 
     check_env(env)
