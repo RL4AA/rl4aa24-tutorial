@@ -185,8 +185,7 @@ class CheetahBackend(ESteeringBaseBackend):
         # Convert DataFrame to Cheetah segment
         self.segment = cheetah.Segment(
             elements=[self._convert_row_to_element(row) for row in df.itertuples()]
-        )
-        self.segment.BPM_430028.is_active = True
+        ).subcell("TT43_START", "PLASMA_E")
         self.segment.BPM_430039.is_active = True
         self.segment.BPM_430103.is_active = True
         self.segment.BPM_430129.is_active = True
