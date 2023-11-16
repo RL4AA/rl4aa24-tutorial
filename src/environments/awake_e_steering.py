@@ -151,15 +151,22 @@ class CheetahBackend(ESteeringBaseBackend):
     """
 
     def __init__(
-        self, incoming_mode: Union[Literal["random"], np.ndarray] = "random"
+        self,
+        incoming_mode: Union[Literal["random"], np.ndarray] = "random",
+        quad_drift_frequency: float = np.pi * 0.001,
+        quad_drift_amplitude: float = 0.0,
     ) -> None:
         # Dynamic import for module only required by this backend
         global cheetah
         import cheetah
 
+        # TODO: Constant incoming
+
         assert isinstance(incoming_mode, (str, np.ndarray))
 
         self.incoming_mode = incoming_mode
+        self.quad_drift_frequency = quad_drift_frequency
+        self.quad_drift_amplitude = quad_drift_amplitude
 
         # Load MADX .out file as DataFrame
         # TODO: Switch to LatticeJSON at some point
@@ -214,6 +221,15 @@ class CheetahBackend(ESteeringBaseBackend):
                 dtype=np.float32,
             ),
         )
+
+        # Utility variables
+        self._persistent_step_count = 0  # Step count that is not reset
+        self._quads = [
+            element
+            for element in self.segment.elements
+            if isinstance(element, cheetah.Quadrupole)
+        ]
+        self._original_quad_settings = np.array([quad.k1 for quad in self._quads])
 
     def _convert_row_to_element(self, row) -> "cheetah.Element":
         """
@@ -331,7 +347,16 @@ class CheetahBackend(ESteeringBaseBackend):
         return options
 
     def update(self) -> None:
+        quad_shift = self.quad_drift_amplitude * np.sin(
+            self.quad_drift_frequency * self._persistent_step_count
+        )  # TODO: Why did Simon use +1 here?
+        drifted_quad_settings = self._original_quad_settings + quad_shift
+        for quad, setting in zip(self._quads, drifted_quad_settings):
+            quad.k1 = torch.as_tensor(setting)
+
         self.segment.track(self.incoming)
+
+        self._persistent_step_count += 1  # Advance "time"
 
     def get_incoming_parameters(self) -> np.ndarray:
         # Parameters of incoming are typed out to guarantee their order, as the
@@ -353,6 +378,9 @@ class CheetahBackend(ESteeringBaseBackend):
         )
 
     def get_info(self) -> dict:
-        info = {"incoming_beam": self.get_incoming_parameters()}
+        info = {
+            "incoming_beam": self.get_incoming_parameters(),
+            "quadrupole_settings": [quad.k1 for quad in self._quads],
+        }
 
         return info

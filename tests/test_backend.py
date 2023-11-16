@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 
 from src.environments.awake_e_steering import AwakeESteering
@@ -26,3 +27,37 @@ def test_seed():
     # Misalignments
     assert all(info_ref["misalignments"] == info_same["misalignments"])
     assert all(info_ref["misalignments"] != info_diff["misalignments"])
+
+
+def test_quad_drift_off():
+    """
+    Test that when the quadrupole drifts are turned off (drift amplitude is set to 0.0),
+    the BPM readings are stable when zero actions are performed.
+    """
+    env = AwakeESteering(backend="cheetah", backend_args={"quad_drift_amplitude": 0.0})
+
+    # Reset the environment
+    observation_on_reset, _ = env.reset()
+
+    # Perform 10 steps without any actions
+    observations = [env.step(np.zeros(10))[0] for _ in range(10)]
+
+    # Check that the BPM readings are stable
+    assert all(np.allclose(obs, observation_on_reset) for obs in observations)
+
+
+def test_quad_drift_on():
+    """
+    Test that when the quadrupole drifts are turned on (drift amplitude is set to a
+    non-zero value), the BPM readings are not stable when zero actions are performed.
+    """
+    env = AwakeESteering(backend="cheetah", backend_args={"quad_drift_amplitude": 1.0})
+
+    # Reset the environment
+    observation_on_reset, _ = env.reset()
+
+    # Perform 10 steps without any actions
+    observations = [env.step(np.zeros(10))[0] for _ in range(10)]
+
+    # Check that the BPM readings are not stable
+    assert not all(np.allclose(obs, observation_on_reset) for obs in observations)
