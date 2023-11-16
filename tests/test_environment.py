@@ -62,7 +62,6 @@ def test_passing_backend_args():
     assert np.allclose(incoming_parameters, incoming_mode)
 
 
-@pytest.mark.skip(reason="Not yet adapted to Awake e-steering")
 def test_public_members():
     """
     Make sure that all and only intended members are exposed to the user (named withouth
@@ -83,18 +82,7 @@ def test_public_members():
         "unwrapped",
         "get_wrapper_attr",
     ]
-    custom_public_members = [
-        "backend",
-        "action_mode",
-        "magnet_init_mode",
-        "max_quad_delta",
-        "max_steerer_delta",
-        "target_beam_mode",
-        "target_threshold",
-        "threshold_hold",
-        "unidirectional_quads",
-        "clip_magnets",
-    ]
+    custom_public_members = ["backend"]
     allowed_public_members = gymnasium_public_members + custom_public_members
 
     env = AwakeESteering(backend="cheetah")
@@ -131,79 +119,3 @@ def test_seed():
     # Target beams
     assert all(observation_ref["target"] == observation_same["target"])
     assert all(observation_ref["target"] != observation_diff["target"])
-
-
-@pytest.mark.skip(reason="Not yet adapted to Awake e-steering")
-def test_magnet_clipping_direct():
-    """
-    Test that magnet settings are clipped to the allowed range when the action mode is
-    set to "direct".
-    """
-    env = AwakeESteering(
-        backend="cheetah",
-        action_mode="direct",
-        clip_magnets=True,
-    )
-    min_magnet_settings = env.observation_space["magnets"].low
-    max_magnet_settings = env.observation_space["magnets"].high
-
-    _, _ = env.reset()
-    observation, _, _, _, _ = env.step(max_magnet_settings * 2)
-
-    assert all(observation["magnets"] >= min_magnet_settings)
-    assert all(observation["magnets"] <= max_magnet_settings)
-
-
-@pytest.mark.skip(reason="Not yet adapted to Awake e-steering")
-def test_magnet_clipping_delta():
-    """
-    Test that magnet settings are clipped to the allowed range when the action mode is
-    set to "delta".
-    """
-    env = AwakeESteering(
-        backend="cheetah",
-        action_mode="direct",
-        clip_magnets=True,
-    )
-    min_magnet_settings = env.observation_space["magnets"].low
-    max_magnet_settings = env.observation_space["magnets"].high
-
-    env.reset(options={"magnet_init": max_magnet_settings * 0.5})
-    observation, _, _, _, _ = env.step(max_magnet_settings)
-
-    assert all(observation["magnets"] >= min_magnet_settings)
-    assert all(observation["magnets"] <= max_magnet_settings)
-
-
-@pytest.mark.skip(reason="Not yet adapted to Awake e-steering")
-def test_fixed_magnet_init_mode_array(section, settings):
-    """
-    Test that if fixed values are set for `magnet_init_mode`, the magnets are in fact
-    set to these values. This tests checks two consecutive resets. It considers the
-    initials values to be set as a NumPy array.
-    """
-    env = section.TransverseTuning(
-        backend="cheetah", magnet_init_mode=np.array(settings)
-    )
-    observation_first_reset, _ = env.reset()
-    _, _, _, _, _ = env.step(env.action_space.sample())
-    observation_second_reset, _ = env.reset()
-
-    assert np.allclose(observation_first_reset["magnets"], np.array(settings))
-    assert np.allclose(observation_second_reset["magnets"], np.array(settings))
-
-
-@pytest.mark.skip(reason="Not yet adapted to Awake e-steering")
-def test_fixed_magnet_init_mode_list(section, settings):
-    """
-    Test that if fixed values are set for `magnet_init_mode`, the magnets are in fact
-    set to these values. This tests checks two consecutive resets. It considers the
-    initials values to be set as a Python list.
-    """
-    env = section.TransverseTuning(backend="cheetah", magnet_init_mode=settings)
-    observation_first_reset, _ = env.reset()
-    _, _, _, _, _ = env.step(env.action_space.sample())
-    observation_second_reset, _ = env.reset()
-
-    assert np.allclose(observation_first_reset["magnets"], np.array(settings))
-    assert np.allclose(observation_second_reset["magnets"], np.array(settings))
