@@ -60,4 +60,4 @@ def test_quad_drift_on():
     observations = [env.step(np.zeros(10))[0] for _ in range(10)]
 
     # Check that the BPM readings are not stable
-    assert not all(np.allclose(obs, observation_on_reset) for obs in observations)
+    assert not any(np.allclose(obs, observation_on_reset) for obs in observations)
