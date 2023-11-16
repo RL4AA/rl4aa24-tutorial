@@ -40,10 +40,16 @@ def test_quad_drift_off():
     observation_on_reset, _ = env.reset()
 
     # Perform 10 steps without any actions
-    observations = [env.step(np.zeros(10))[0] for _ in range(10)]
+    step_observations = [env.step(np.zeros(10))[0] for _ in range(10)]
+
+    # Perform 10 resets
+    reset_observations = [env.reset()[0] for _ in range(10)]
 
     # Check that the BPM readings are stable
-    assert all(np.allclose(obs, observation_on_reset) for obs in observations)
+    assert all(
+        np.allclose(obs, observation_on_reset)
+        for obs in step_observations + reset_observations
+    )
 
 
 def test_quad_drift_on():
@@ -57,7 +63,13 @@ def test_quad_drift_on():
     observation_on_reset, _ = env.reset()
 
     # Perform 10 steps without any actions
-    observations = [env.step(np.zeros(10))[0] for _ in range(10)]
+    step_observations = [env.step(np.zeros(10))[0] for _ in range(10)]
+
+    # Perform 10 resets
+    reset_observations = [env.reset()[0] for _ in range(10)]
 
     # Check that the BPM readings are not stable
-    assert not any(np.allclose(obs, observation_on_reset) for obs in observations)
+    assert not any(
+        np.allclose(obs, observation_on_reset)
+        for obs in step_observations + reset_observations
+    )
