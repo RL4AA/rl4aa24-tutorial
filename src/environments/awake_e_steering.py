@@ -148,6 +148,10 @@ class CheetahBackend(ESteeringBaseBackend):
     :param incoming_mode: Setting for incoming beam parameters on reset. Can be
         `"random"` to generate random parameters or an array of 11 values to set them to
         a constant value.
+    :param quad_drift_frequency: Frequency of quadrupole drifts.
+    :param quad_drift_amplitude: Amplitude of quadrupole drifts.
+    :param quad_random_scale: Scale of random disturbance to quadrupole settings on
+        reset.
     """
 
     def __init__(
@@ -155,6 +159,7 @@ class CheetahBackend(ESteeringBaseBackend):
         incoming_mode: Union[Literal["random"], np.ndarray] = "random",
         quad_drift_frequency: float = np.pi * 0.001,
         quad_drift_amplitude: float = 0.0,
+        quad_random_scale: float = 0.0,
     ) -> None:
         # Dynamic import for module only required by this backend
         global cheetah
@@ -167,6 +172,7 @@ class CheetahBackend(ESteeringBaseBackend):
         self.incoming_mode = incoming_mode
         self.quad_drift_frequency = quad_drift_frequency
         self.quad_drift_amplitude = quad_drift_amplitude
+        self.quad_random_scale = quad_random_scale
 
         # Load MADX .out file as DataFrame
         # TODO: Switch to LatticeJSON at some point
@@ -307,6 +313,10 @@ class CheetahBackend(ESteeringBaseBackend):
             ]
         )
 
+    def _set_quadrupoles(self, values: np.ndarray) -> None:
+        for quad, setting in zip(self._quads, values):
+            quad.k1 = torch.as_tensor(setting.astype(np.float32))
+
     def reset(self, options=None) -> None:
         preprocessed_options = self._preprocess_reset_options(options)
 
@@ -332,6 +342,13 @@ class CheetahBackend(ESteeringBaseBackend):
             sigma_p=torch.tensor(incoming_parameters[10]),
         )
 
+        # Set quads to random values (if random scale is > 0)
+        self._random_quad_disturbance_factors = np.random.uniform(
+            1.0 - self.quad_random_scale / 2.0,
+            1.0 + self.quad_random_scale / 2.0,
+            size=11,
+        )
+
     def _preprocess_reset_options(self, options: dict) -> dict:
         """
         Check that only valid options are passed and make it a dict if None was passed.
@@ -350,8 +367,10 @@ class CheetahBackend(ESteeringBaseBackend):
             self.quad_drift_frequency * self._persistent_step_count
         )  # TODO: Why did Simon use +1 here?
         drifted_quad_settings = self._original_quad_settings + quad_shift
-        for quad, setting in zip(self._quads, drifted_quad_settings):
-            quad.k1 = torch.as_tensor(setting)
+        drifted_and_disturbed_quad_settings = (
+            drifted_quad_settings * self._random_quad_disturbance_factors
+        )
+        self._set_quadrupoles(drifted_and_disturbed_quad_settings)
 
         self.segment.track(self.incoming)
 

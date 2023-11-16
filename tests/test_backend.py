@@ -73,3 +73,27 @@ def test_quad_drift_on():
         np.allclose(obs, observation_on_reset)
         for obs in step_observations + reset_observations
     )
+
+
+def test_random_quads_off():
+    """
+    Test that when random quads are off, we get the same BPM readings on each reset.
+    """
+    env = AwakeESteering(backend="cheetah", backend_args={"quad_random_scale": 0.0})
+
+    observation_1, _ = env.reset()
+    observation_2, _ = env.reset()
+
+    assert np.allclose(observation_1, observation_2)
+
+
+def test_random_quads_on():
+    """
+    Test that when random quads are on, we get different BPM readings on each reset.
+    """
+    env = AwakeESteering(backend="cheetah", backend_args={"quad_random_scale": 1.0})
+
+    observation_1, _ = env.reset()
+    observation_2, _ = env.reset()
+
+    assert not np.allclose(observation_1, observation_2)
