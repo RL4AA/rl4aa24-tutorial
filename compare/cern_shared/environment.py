@@ -4,16 +4,13 @@ import random
 from enum import Enum
 
 import gymnasium as gym
-import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
-import scipy.optimize as opt
-from cdao_interfaces import OptEnv
-from gym import spaces
-from utils import twissReader
+from gymnasium import spaces
+
+from .utils import twissReader
 
 
-class e_trajectory_simENV(OptEnv):
+class e_trajectory_simENV(gym.Env):
     def __init__(self, **kwargs):
         self.current_action = None
         self.initial_conditions = []
@@ -88,7 +85,13 @@ class e_trajectory_simENV(OptEnv):
         if (return_reward > self.threshold) or (return_reward < 15 * self.threshold):
             self.is_finalized = True
 
-        return return_state, return_reward, self.is_finalized, {}
+        return (
+            return_state.astype(np.float32),
+            return_reward,
+            self.is_finalized,
+            False,
+            {},
+        )
 
     def step_opt(self, action):
         state, reward = self._take_action(action, is_optimisation=True)
@@ -155,11 +158,11 @@ class e_trajectory_simENV(OptEnv):
             self.kicks_0 = self.settingsV * self.action_scale
 
         if self.plane == Plane.horizontal:
-            init_positions = np.zeros(len(self.positionsH))  # self.positionsH
+            # init_positions = np.zeros(len(self.positionsH))  # self.positionsH
             rmatrix = self.responseH
 
         if self.plane == Plane.vertical:
-            init_positions = np.zeros(len(self.positionsV))  # self.positionsV
+            # init_positions = np.zeros(len(self.positionsV))  # self.positionsV
             rmatrix = self.responseV
 
         self.current_episode += 1
@@ -180,7 +183,7 @@ class e_trajectory_simENV(OptEnv):
         self.initial_conditions.append([return_initial_state])
         return_value = return_initial_state
 
-        return return_value
+        return return_value.astype(np.float32), {}
 
     def seed(self, seed=None):
         random.seed(seed)
