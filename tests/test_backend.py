@@ -1,3 +1,4 @@
+import cheetah
 import numpy as np
 import pytest
 
@@ -37,19 +38,25 @@ def test_quad_drift_off():
     env = AwakeESteering(backend="cheetah", backend_args={"quad_drift_amplitude": 0.0})
 
     # Reset the environment
-    observation_on_reset, _ = env.reset()
+    _, info_on_reset = env.reset()
+    quads_on_reset = info_on_reset["backend_info"]["quadrupole_settings"]
 
     # Perform 10 steps without any actions
-    step_observations = [env.step(np.zeros(10))[0] for _ in range(10)]
+    step_quads = []
+    for _ in range(10):
+        _, _, _, _, info = env.step(np.zeros(10))
+        quads = info["backend_info"]["quadrupole_settings"]
+        step_quads.append(quads)
 
     # Perform 10 resets
-    reset_observations = [env.reset()[0] for _ in range(10)]
+    reset_quads = []
+    for _ in range(10):
+        _, info = env.reset()
+        quads = info["backend_info"]["quadrupole_settings"]
+        reset_quads.append(quads)
 
     # Check that the BPM readings are stable
-    assert all(
-        np.allclose(obs, observation_on_reset)
-        for obs in step_observations + reset_observations
-    )
+    assert all(np.allclose(quads, quads_on_reset) for quads in step_quads + reset_quads)
 
 
 def test_quad_drift_on():
@@ -60,18 +67,26 @@ def test_quad_drift_on():
     env = AwakeESteering(backend="cheetah", backend_args={"quad_drift_amplitude": 1.0})
 
     # Reset the environment
-    observation_on_reset, _ = env.reset()
+    _, info_on_reset = env.reset()
+    quads_on_reset = info_on_reset["backend_info"]["quadrupole_settings"]
 
     # Perform 10 steps without any actions
-    step_observations = [env.step(np.zeros(10))[0] for _ in range(10)]
+    step_quads = []
+    for _ in range(10):
+        _, _, _, _, info = env.step(np.zeros(10))
+        quads = info["backend_info"]["quadrupole_settings"]
+        step_quads.append(quads)
 
     # Perform 10 resets
-    reset_observations = [env.reset()[0] for _ in range(10)]
+    reset_quads = []
+    for _ in range(10):
+        _, info = env.reset()
+        quads = info["backend_info"]["quadrupole_settings"]
+        reset_quads.append(quads)
 
     # Check that the BPM readings are not stable
     assert not any(
-        np.allclose(obs, observation_on_reset)
-        for obs in step_observations + reset_observations
+        np.allclose(quads, quads_on_reset) for quads in step_quads + reset_quads
     )
 
 
@@ -81,10 +96,13 @@ def test_random_quads_off():
     """
     env = AwakeESteering(backend="cheetah", backend_args={"quad_random_scale": 0.0})
 
-    observation_1, _ = env.reset()
-    observation_2, _ = env.reset()
+    _, info_1 = env.reset()
+    _, info_2 = env.reset()
 
-    assert np.allclose(observation_1, observation_2)
+    assert np.allclose(
+        info_1["backend_info"]["quadrupole_settings"],
+        info_2["backend_info"]["quadrupole_settings"],
+    )
 
 
 def test_random_quads_on():
@@ -93,7 +111,10 @@ def test_random_quads_on():
     """
     env = AwakeESteering(backend="cheetah", backend_args={"quad_random_scale": 1.0})
 
-    observation_1, _ = env.reset()
-    observation_2, _ = env.reset()
+    _, info_1 = env.reset()
+    _, info_2 = env.reset()
 
-    assert not np.allclose(observation_1, observation_2)
+    assert not np.allclose(
+        info_1["backend_info"]["quadrupole_settings"],
+        info_2["backend_info"]["quadrupole_settings"],
+    )

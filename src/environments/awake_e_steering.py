@@ -59,7 +59,7 @@ class AwakeESteering(gym.Env):
         self.backend.reset(options=backend_options)
 
         # Initialise magnets
-        self.backend.set_magnets(np.zeros(10))
+        self.backend.set_magnets(self.action_space.sample())
 
         # Update anything in the accelerator (mainly for running simulations)
         self.backend.update()
@@ -145,9 +145,6 @@ class CheetahBackend(ESteeringBaseBackend):
     """
     Cheetah simulation backend.
 
-    :param incoming_mode: Setting for incoming beam parameters on reset. Can be
-        `"random"` to generate random parameters or an array of 11 values to set them to
-        a constant value.
     :param quad_drift_frequency: Frequency of quadrupole drifts.
     :param quad_drift_amplitude: Amplitude of quadrupole drifts.
     :param quad_random_scale: Scale of random disturbance to quadrupole settings on
@@ -156,7 +153,6 @@ class CheetahBackend(ESteeringBaseBackend):
 
     def __init__(
         self,
-        incoming_mode: Union[Literal["random"], np.ndarray] = "random",
         quad_drift_frequency: float = np.pi * 0.001,
         quad_drift_amplitude: float = 0.0,
         quad_random_scale: float = 0.0,
@@ -165,11 +161,6 @@ class CheetahBackend(ESteeringBaseBackend):
         global cheetah
         import cheetah
 
-        # TODO: Constant incoming
-
-        assert isinstance(incoming_mode, (str, np.ndarray))
-
-        self.incoming_mode = incoming_mode
         self.quad_drift_frequency = quad_drift_frequency
         self.quad_drift_amplitude = quad_drift_amplitude
         self.quad_random_scale = quad_random_scale
@@ -203,28 +194,12 @@ class CheetahBackend(ESteeringBaseBackend):
         self.segment.BPM_412349.is_active = True
         self.segment.BPM_412351.is_active = True
 
-        # Spaces for domain randomisation
-        self.incoming_beam_space = spaces.Box(
-            low=np.array(
-                [
-                    80e6,
-                    -1e-3,
-                    -1e-4,
-                    -1e-3,
-                    -1e-4,
-                    1e-5,
-                    1e-6,
-                    1e-5,
-                    1e-6,
-                    1e-6,
-                    1e-4,
-                ],
-                dtype=np.float32,
-            ),
-            high=np.array(
-                [160e6, 1e-3, 1e-4, 1e-3, 1e-4, 5e-4, 5e-5, 5e-4, 5e-5, 5e-5, 1e-3],
-                dtype=np.float32,
-            ),
+        # Set up incoming beam (currently only constant as in all original environments)
+        self.incoming = cheetah.ParameterBeam.from_twiss(
+            beta_x=torch.tensor(5.0),
+            beta_y=torch.tensor(5.0),
+            emittance_x=torch.tensor(1.93e-7),
+            emittance_y=torch.tensor(1.93e-7),
         )
 
         # Utility variables
@@ -318,29 +293,7 @@ class CheetahBackend(ESteeringBaseBackend):
             quad.k1 = torch.as_tensor(setting.astype(np.float32))
 
     def reset(self, options=None) -> None:
-        preprocessed_options = self._preprocess_reset_options(options)
-
-        # Set up incoming beam
-        if "incoming" in preprocessed_options:
-            incoming_parameters = preprocessed_options["incoming"]
-        elif isinstance(self.incoming_mode, np.ndarray):
-            incoming_parameters = self.incoming_mode
-        elif self.incoming_mode == "random":
-            incoming_parameters = self.incoming_beam_space.sample()
-
-        self.incoming = cheetah.ParameterBeam.from_parameters(
-            energy=torch.tensor(incoming_parameters[0]),
-            mu_x=torch.tensor(incoming_parameters[1]),
-            mu_xp=torch.tensor(incoming_parameters[2]),
-            mu_y=torch.tensor(incoming_parameters[3]),
-            mu_yp=torch.tensor(incoming_parameters[4]),
-            sigma_x=torch.tensor(incoming_parameters[5]),
-            sigma_xp=torch.tensor(incoming_parameters[6]),
-            sigma_y=torch.tensor(incoming_parameters[7]),
-            sigma_yp=torch.tensor(incoming_parameters[8]),
-            sigma_s=torch.tensor(incoming_parameters[9]),
-            sigma_p=torch.tensor(incoming_parameters[10]),
-        )
+        preprocessed_options = self._preprocess_reset_options(options)  # noqa: F841
 
         # Set quads to random values (if random scale is > 0)
         self._random_quad_disturbance_factors = np.random.uniform(
@@ -356,7 +309,7 @@ class CheetahBackend(ESteeringBaseBackend):
         if options is None:
             return {}
 
-        valid_options = ["incoming"]
+        valid_options = []
         for option in options:
             assert option in valid_options
 
@@ -372,7 +325,7 @@ class CheetahBackend(ESteeringBaseBackend):
         )
         self._set_quadrupoles(drifted_and_disturbed_quad_settings)
 
-        self.segment.track(self.incoming)
+        _ = self.segment.track(self.incoming)
 
         self._persistent_step_count += 1  # Advance "time"
 
@@ -398,7 +351,7 @@ class CheetahBackend(ESteeringBaseBackend):
     def get_info(self) -> dict:
         info = {
             "incoming_beam": self.get_incoming_parameters(),
-            "quadrupole_settings": [quad.k1 for quad in self._quads],
+            "quadrupole_settings": np.array([quad.k1 for quad in self._quads]),
         }
 
         return info

@@ -17,49 +17,19 @@ def test_passing_backend_args():
     """
     Test that backend_args are passed through the environment to the backend correctly.
     """
-    incoming_mode = np.array(
-        [
-            160e6,
-            1e-3,
-            1e-4,
-            1e-3,
-            1e-4,
-            5e-4,
-            5e-5,
-            5e-4,
-            5e-5,
-            5e-5,
-            1e-3,
-        ],
-        dtype=np.float32,
-    )
-
     env = AwakeESteering(
-        backend="cheetah", backend_args={"incoming_mode": incoming_mode}
+        backend="cheetah",
+        backend_args={
+            "quad_drift_frequency": np.pi * 0.002,
+            "quad_drift_amplitude": 0.3142,
+            "quad_random_scale": 0.42,
+        },
     )
 
     # Test that config is passed through to backend
-    assert all(env.unwrapped.backend.incoming_mode == incoming_mode)
-
-    # Test that configs are used correctly
-    _, _ = env.reset()
-    incoming_parameters = np.array(
-        [
-            env.unwrapped.backend.incoming.parameters["energy"],
-            env.unwrapped.backend.incoming.parameters["mu_x"],
-            env.unwrapped.backend.incoming.parameters["mu_xp"],
-            env.unwrapped.backend.incoming.parameters["mu_y"],
-            env.unwrapped.backend.incoming.parameters["mu_yp"],
-            env.unwrapped.backend.incoming.parameters["sigma_x"],
-            env.unwrapped.backend.incoming.parameters["sigma_xp"],
-            env.unwrapped.backend.incoming.parameters["sigma_y"],
-            env.unwrapped.backend.incoming.parameters["sigma_yp"],
-            env.unwrapped.backend.incoming.parameters["sigma_s"],
-            env.unwrapped.backend.incoming.parameters["sigma_p"],
-        ]
-    )
-
-    assert np.allclose(incoming_parameters, incoming_mode)
+    assert env.unwrapped.backend.quad_drift_frequency == np.pi * 0.002
+    assert env.unwrapped.backend.quad_drift_amplitude == 0.3142
+    assert env.unwrapped.backend.quad_random_scale == 0.42
 
 
 def test_public_members():
