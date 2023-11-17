@@ -181,7 +181,7 @@ def compareTwissFiles(file1, file2, refElement=None, posAttr="S"):
     s2_monitors[0].removePlaneFromMonitors()
     s2_monitors[1].removePlaneFromMonitors()
 
-    for index, plane in enumerate(["H", "V"]):
+    for index, plane in enumerate(["H", "V"]):  # noqa: B007
         if not len(s1_monitors[index].getNames()) == len(s2_monitors[index].getNames()):
             useNames = [
                 x
@@ -292,7 +292,7 @@ def readTwissFromMADX(inputFile, name=""):
 
     for i, line in enumerate(data):
         if line.startswith("*"):
-            for idx, val in enumerate(line.split()):
+            for idx, val in enumerate(line.split()):  # noqa: B007
                 fieldNames.append(val)
             i_start = i + 1
 
@@ -302,59 +302,75 @@ def readTwissFromMADX(inputFile, name=""):
                 raise TwissException("MISSING FIELD", FIELD_S, "IN TWISS INPUT")
             if FIELD_X not in fieldNames:
                 x = 0
-                warnings.warn("MISSING FIELD" + FIELD_X + "IN TWISS INPUT" + inputFile)
+                warnings.warn(
+                    "MISSING FIELD" + FIELD_X + "IN TWISS INPUT" + inputFile,
+                    stacklevel=2,
+                )
             if FIELD_PX not in fieldNames:
                 px = 0
                 warnings.warn(
-                    "MISSING FIELD " + FIELD_PX + " IN TWISS INPUT " + inputFile
+                    "MISSING FIELD " + FIELD_PX + " IN TWISS INPUT " + inputFile,
+                    stacklevel=2,
                 )
             if FIELD_BETX not in fieldNames:
                 bx = 0
                 warnings.warn(
-                    "MISSING FIELD " + FIELD_BETX + " IN TWISS INPUT" + inputFile
+                    "MISSING FIELD " + FIELD_BETX + " IN TWISS INPUT" + inputFile,
+                    stacklevel=2,
                 )
             if FIELD_MUX not in fieldNames:
                 mux = 0
                 warnings.warn(
-                    "MISSING FIELD " + FIELD_MUX + " IN TWISS INPUT" + inputFile
+                    "MISSING FIELD " + FIELD_MUX + " IN TWISS INPUT" + inputFile,
+                    stacklevel=2,
                 )
             if FIELD_ALPX not in fieldNames:
                 alfx = 0
                 warnings.warn(
-                    "MISSING FIELD " + FIELD_ALPX + " IN TWISS INPUT" + inputFile
+                    "MISSING FIELD " + FIELD_ALPX + " IN TWISS INPUT" + inputFile,
+                    stacklevel=2,
                 )
             if FIELD_Y not in fieldNames:
                 y = 0
-                warnings.warn("MISSING FIELD" + FIELD_Y + "IN TWISS INPUT" + inputFile)
+                warnings.warn(
+                    "MISSING FIELD" + FIELD_Y + "IN TWISS INPUT" + inputFile,
+                    stacklevel=2,
+                )
             if FIELD_PY not in fieldNames:
                 py = 0
                 warnings.warn(
-                    "MISSING FIELD " + FIELD_PY + " IN TWISS INPUT" + inputFile
+                    "MISSING FIELD " + FIELD_PY + " IN TWISS INPUT" + inputFile,
+                    stacklevel=2,
                 )
             if FIELD_BETY not in fieldNames:
                 by = 0
                 warnings.warn(
-                    "MISSING FIELD " + FIELD_BETY + " IN TWISS INPUT" + inputFile
+                    "MISSING FIELD " + FIELD_BETY + " IN TWISS INPUT" + inputFile,
+                    stacklevel=2,
                 )
             if FIELD_MUY not in fieldNames:
                 muy = 0
                 warnings.warn(
-                    "MISSING FIELD " + FIELD_MUY + " IN TWISS INPUT" + inputFile
+                    "MISSING FIELD " + FIELD_MUY + " IN TWISS INPUT" + inputFile,
+                    stacklevel=2,
                 )
             if FIELD_ALPY not in fieldNames:
                 alfy = 0
                 warnings.warn(
-                    "MISSING FIELD " + FIELD_ALPY + " IN TWISS INPUT" + inputFile
+                    "MISSING FIELD " + FIELD_ALPY + " IN TWISS INPUT" + inputFile,
+                    stacklevel=2,
                 )
             if FIELD_DX not in fieldNames:
                 dx = 0
                 warnings.warn(
-                    "MISSING FIELD " + FIELD_DX + " IN TWISS INPUT" + inputFile
+                    "MISSING FIELD " + FIELD_DX + " IN TWISS INPUT" + inputFile,
+                    stacklevel=2,
                 )
             if FIELD_DY not in fieldNames:
                 dy = 0
                 warnings.warn(
-                    "MISSING FIELD " + FIELD_DY + " IN TWISS INPUT" + inputFile
+                    "MISSING FIELD " + FIELD_DY + " IN TWISS INPUT" + inputFile,
+                    stacklevel=2,
                 )
 
         elif i > i_start and i_start > 0:
@@ -415,7 +431,7 @@ def readAWAKEelectronTwiss():
     try:
         filename_awakeElectron = "../src/environments/electron_tt43.out"
         twissH, twissV = readTwissFromMADX(filename_awakeElectron)
-    except:  # noqa: E722
+    except Exception:
         filename_awakeElectron = "../src/environments/electron_tt43.out"
         twissH, twissV = readTwissFromMADX(filename_awakeElectron)
     return twissH, twissV
@@ -630,7 +646,7 @@ class TwissSequence:
             for i, e in enumerate(self.elements):
                 e.x -= twiss2.elements[i].x
         else:
-            warnings.warn("BAD LENGTH FOR SUBTRACTION")
+            warnings.warn("BAD LENGTH FOR SUBTRACTION", stacklevel=2)
 
     def getNeighbouringBPMsforElement(self, element, plane):
         indexBefore = 0
