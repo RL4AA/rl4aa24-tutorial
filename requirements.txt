@@ -9,4 +9,5 @@ numpy
 pandas
 pytest
 rl_zoo3
+seaborn
 torch

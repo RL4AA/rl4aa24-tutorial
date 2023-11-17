@@ -60,7 +60,10 @@ class AwakeESteering(gym.Env):
         self.backend.reset(options=backend_options)
 
         # Initialise magnets
-        self.backend.set_magnets(self.action_space.sample())
+        if "magnet_init" in env_options:
+            self.backend.set_magnets(env_options["magnet_init"])
+        else:
+            self.backend.set_magnets(self.action_space.sample())
 
         # Update anything in the accelerator (mainly for running simulations)
         self.backend.update()
@@ -99,7 +102,7 @@ class AwakeESteering(gym.Env):
         if options is None:
             return {}, None
 
-        valid_options = ["backend_options"]
+        valid_options = ["backend_options", "magnet_init"]
         for option in options:
             assert option in valid_options
 
