@@ -1,4 +1,3 @@
-import cheetah
 import numpy as np
 import pytest
 
