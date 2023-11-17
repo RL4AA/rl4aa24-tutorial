@@ -1,5 +1,5 @@
 black
-git+https://github.com/desy-ml/cheetah.git@101-error-when-using-bpm-with-parameter-beam
+git+https://github.com/desy-ml/cheetah.git
 flake8
 isort
 jupyter
