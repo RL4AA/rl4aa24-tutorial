@@ -1,4 +1,4 @@
-import logging.config
+import logging.config  # noqa: F401
 import random
 from abc import ABC
 from enum import Enum
@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import scipy.optimize as opt
-from Application import twissReader
+from Application import twissReader  # noqa: F401
 from cpymad.madx import Madx
 
 # 3rd party modules
@@ -44,7 +44,7 @@ def generate_drifting_optics(
                 print(ele)
     madx.globals.update(quads)
     madx.input(
-        "initbeta0:beta0,BETX=5,ALFX=0,DX=0,DPX=0,BETY=5,ALFY=0,DY=0.0,DPY=0.0,x=0,px=0,y=0,py=0;"
+        "initbeta0:beta0,BETX=5,ALFX=0,DX=0,DPX=0,BETY=5,ALFY=0,DY=0.0,DPY=0.0,x=0,px=0,y=0,py=0;"  # noqa: E501
     )
     twiss_cpymad = madx.twiss(beta0="initbeta0").dframe()
 
@@ -156,7 +156,10 @@ class e_trajectory_simENV(gym.Env, ABC):
         self.sucesses = []
 
     def set_system_state(self, time_step):
-        """specific function, while training samples fresh new tasks and for testing it uses previously saved tasks"""
+        """
+        Specific function, while training samples fresh new tasks and for testing it
+        uses previously saved tasks
+        """
         twiss = generate_drifting_optics(time_step=time_step)
         twiss_bpms = twiss[twiss["keyword"] == "monitor"]
         twiss_bpms = twiss_bpms[1:]
@@ -217,7 +220,12 @@ class e_trajectory_simENV(gym.Env, ABC):
         # self.lens.append(0)
         self.sucesses.append(0)
 
-        # print('reset:', self.total_episodes, self.total_interactions, self.current_interactions)
+        # print(
+        #     "reset:",
+        #     self.total_episodes,
+        #     self.total_interactions,
+        #     self.current_interactions,
+        # )
         # print('init stat: ', return_initial_state)
 
         # self.previous_state = return_initial_state
@@ -296,9 +304,6 @@ class e_trajectory_simENV(gym.Env, ABC):
         else:
             raise Exception("You need to set plane enum")
 
-    def seed(self, seed):
-        np.random.seed(seed)
-
     def _take_action(self, kicks_scaled):
         dkicks = self.kicks_0 + kicks_scaled
         self.kicks_0 = dkicks.copy()
@@ -310,7 +315,7 @@ class e_trajectory_simENV(gym.Env, ABC):
             golden = self.goldenH
         elif plane == Plane.vertical:
             rmatrix = self.responseV
-            golden = self.goldenV
+            golden = self.goldenV  # noqa: F841
         trajectory = self._calculate_trajectory(rmatrix, dkicks)
         return trajectory
 
@@ -441,10 +446,10 @@ if __name__ == "__main__":
             )
             return func_val
 
-        optimizer = BayesianOptimization(
+        optimizer = BayesianOptimization(  # noqa: F821
             f=black_box_function,
             pbounds=pbounds,
-            verbose=2,  # verbose = 1 prints only when a maximum is observed, verbose = 0 is silent
+            verbose=2,  # verbose = 1 prints only when a maximum is observed, verbose = 0 is silent # noqa: E501
             random_state=3,
         )
 

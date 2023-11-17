@@ -3,11 +3,11 @@ import pickle
 import time
 from collections import deque
 from datetime import datetime
-from typing import Optional
+from typing import Optional  # noqa: F401
 
 import gym
 import numpy as np
-from gym import spaces
+from gym import spaces  # noqa: F401
 from matplotlib import pyplot as plt
 
 
@@ -150,7 +150,7 @@ class RecordStatisticsWrapper(gym.Wrapper):
         self.previous_traj.set_ydata(self.previous_state[:-1])
 
         self.ax1.set_title(
-            f"ep:{self.total_episodes_wrapper} ep steps {self.current_interactions_wrapper} total: {self.total_interactions_wrapper},"
+            f"ep:{self.total_episodes_wrapper} ep steps {self.current_interactions_wrapper} total: {self.total_interactions_wrapper},"  # noqa: E501
             f"rew: {reward}"
         )
 
@@ -183,7 +183,9 @@ class RecordStatisticsWrapper(gym.Wrapper):
         self.ax3 = self.fig.add_subplot(313)
 
         self.x_line = range(self.observation_space.shape[0] - 1)
-        # self.current_traj, = self.ax.plot(self.x_line, np.zeros(self.action_space.shape[0]), 'b-')
+        # (self.current_traj,) = self.ax.plot(
+        #     self.x_line, np.zeros(self.action_space.shape[0]), "b-"
+        # )
         (self.current_traj_clipped,) = self.ax1.plot(
             self.x_line, np.zeros(self.observation_space.shape[0] - 1), "r-"
         )
