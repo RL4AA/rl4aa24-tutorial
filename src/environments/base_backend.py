@@ -6,7 +6,7 @@ import numpy as np
 class ESteeringBaseBackend(ABC):
     """Abstract class for a backend imlementation."""
 
-    def setup(self) -> None:
+    def setup(self) -> None:  # noqa: B027
         """
         Prepare the accelerator for use with the environment. Should mostly be used for
         setting up simulations.
@@ -50,7 +50,7 @@ class ESteeringBaseBackend(ABC):
         """
         raise NotImplementedError
 
-    def reset(self) -> None:
+    def reset(self) -> None:  # noqa: B027
         """
         Code that should set the accelerator up for a new episode. Run when the `reset`
         is called.
@@ -62,7 +62,7 @@ class ESteeringBaseBackend(ABC):
         """
         pass
 
-    def update(self) -> None:
+    def update(self) -> None:  # noqa: B027
         """
         Update accelerator metrics for later use. Use this to run the simulation or
         cache sensor readings.

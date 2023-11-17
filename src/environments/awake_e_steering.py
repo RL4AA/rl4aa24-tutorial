@@ -29,7 +29,7 @@ class AwakeESteering(gym.Env):
     def __init__(
         self,
         backend: Literal["cheetah"] = "cheetah",
-        backend_args: dict = {},
+        backend_args: Optional[dict] = None,
         render_mode: Optional[Literal["human", "rgb_array"]] = None,
     ) -> None:
         self.observation_space = spaces.Box(
@@ -38,6 +38,7 @@ class AwakeESteering(gym.Env):
         self.action_space = spaces.Box(low=-3e-4, high=3e-4, shape=(10,))
 
         # Setup particle simulation or control system backend
+        backend_args = backend_args or {}
         if backend == "cheetah":
             self.backend = CheetahBackend(**backend_args)
         else:
