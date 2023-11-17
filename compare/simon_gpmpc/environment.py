@@ -3,22 +3,17 @@ import random
 from abc import ABC
 from enum import Enum
 
-import gym
+import gymnasium as gym
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import scipy.optimize as opt
-from Application import twissReader  # noqa: F401
 from cpymad.madx import Madx
-
-# 3rd party modules
-# from bayes_opt import BayesianOptimization
-from gym import spaces
+from gymnasium import spaces
 from numpy import linalg as LA
 
-# from mbrllib.mbrl.env.Application import twissReader
-# from Application import twissReader
-from record_statistics_wrapper_rew import RecordStatisticsWrapper
+from ..github_vanilla.utils import twissReader  # noqa: F401
+from .record_statistics_wrapper_rew import RecordStatisticsWrapper
 
 
 def generate_drifting_optics(
@@ -28,7 +23,7 @@ def generate_drifting_optics(
     MADX_OUT = [f"option, -{ele};" for ele in OPTIONS]
     madx = Madx(stdout=False)
     madx.input("\n".join(MADX_OUT))
-    tt43_ini = "Application/electron_design.mad"
+    tt43_ini = "../compare/simon_gpmpc/Application/electron_design.mad"
     madx.call(file=tt43_ini, chdir=True)
     madx.use(sequence="tt43", range="#s/plasma_merge")
     quads = {}
@@ -231,7 +226,7 @@ class e_trajectory_simENV(gym.Env, ABC):
         # self.previous_state = return_initial_state
         print("************* reset  " * 5)
         # print(np.append(return_initial_state, 0))
-        return np.append(return_initial_state, 0.0)
+        return np.append(return_initial_state, 0.0).astype(np.float32), {}
 
     def step(self, action, reference_position=None):
         print("step..." * 20)
@@ -288,9 +283,10 @@ class e_trajectory_simENV(gym.Env, ABC):
 
         self.traj_return += return_reward / self.current_steps
         return (
-            np.append(return_state, ((-return_reward))),
+            np.append(return_state, ((-return_reward))).astype(np.float32),
             return_reward,
             self.is_finalized,
+            False,
             {},
         )
 
