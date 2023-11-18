@@ -4,15 +4,14 @@ import pickle
 import random
 from enum import Enum
 
-import gym
+import gymnasium as gym
 import numpy as np
-import pandas as pd
 from cpymad.madx import Madx
-from gym import spaces
+from gymnasium import spaces
 
 
-# Standard environment for the AWAKE environment, adjusted so it can be used for the MAML therefore containing functions
-# for creating and sampling tasks
+# Standard environment for the AWAKE environment, adjusted so it can be used for the
+# MAML therefore containing functions for creating and sampling tasks
 def generate_optics():
     OPTIONS = ["WARN"]  # ['ECHO', 'WARN', 'INFO', 'DEBUG', 'TWISS_PRINT']
     MADX_OUT = [f"option, -{ele};" for ele in OPTIONS]
@@ -20,7 +19,7 @@ def generate_optics():
     madx = Madx(stdout=False)
     madx.input("\n".join(MADX_OUT))
 
-    tt43_ini = "maml_rl/envs/electron_design.mad"
+    tt43_ini = "../compare/simon_maml/electron_design.mad"
 
     madx.call(file=tt43_ini, chdir=True)
 
@@ -34,7 +33,7 @@ def generate_optics():
     madx.globals.update(quads)
 
     madx.input(
-        "initbeta0:beta0,BETX=5,ALFX=0,DX=0,DPX=0,BETY=5,ALFY=0,DY=0.0,DPY=0.0,x=0,px=0,y=0,py=0;"
+        "initbeta0:beta0,BETX=5,ALFX=0,DX=0,DPX=0,BETY=5,ALFY=0,DY=0.0,DPY=0.0,x=0,px=0,y=0,py=0;"  # noqa: E501
     )
     twiss_cpymad = madx.twiss(beta0="initbeta0").dframe()
 
@@ -117,7 +116,8 @@ class e_trajectory_simENV(gym.Env):
             self.twiss_bpms, self.twiss_correctors, self.plane
         )
 
-    # MAML specific function, while training samples fresh new tasks and for testing it uses previously saved tasks
+    # MAML specific function, while training samples fresh new tasks and for testing it
+    # uses previously saved tasks
     def sample_tasks(self, num_tasks):
         goals = []
         print("Number of tasks: " + str(num_tasks))
@@ -141,7 +141,9 @@ class e_trajectory_simENV(gym.Env):
                 goals = pickle.load(input_file)
 
         # Code used to create sample Tasks
-        # with open("../AWAKE_MB_META_RL/meta_environment/Tasks_data/Tasks", "wb") as fp:  # Pickling
+        # with open(
+        #     "../AWAKE_MB_META_RL/meta_environment/Tasks_data/Tasks", "wb"
+        # ) as fp:  # Pickling
         #     pickle.dump(goals, fp)
         # print("Saved Tasks")
 
@@ -177,7 +179,13 @@ class e_trajectory_simENV(gym.Env):
         if (return_reward > self.threshold) or self.current_steps > self.MAX_TIME:
             self.is_finalized = True
 
-        return return_state, return_reward, self.is_finalized, {"task": self._id}
+        return (
+            return_state.astype(np.float32),
+            return_reward,
+            self.is_finalized,
+            False,
+            {"task": self._id},
+        )
 
     def step_opt(self, action):
         state, reward = self._take_action(action, is_optimisation=True)
@@ -261,11 +269,11 @@ class e_trajectory_simENV(gym.Env):
             self.kicks_0 = self.settingsV * self.action_scale
 
         if self.plane == Plane.horizontal:
-            init_positions = np.zeros(len(self.positionsH))  # self.positionsH
+            # init_positions = np.zeros(len(self.positionsH))  # self.positionsH
             rmatrix = self.responseH
 
         if self.plane == Plane.vertical:
-            init_positions = np.zeros(len(self.positionsV))  # self.positionsV
+            # init_positions = np.zeros(len(self.positionsV))  # self.positionsV
             rmatrix = self.responseV
 
         self.current_episode += 1
@@ -285,7 +293,7 @@ class e_trajectory_simENV(gym.Env):
         return_initial_state = np.array(state * self.state_scale)
         self.initial_conditions.append([return_initial_state])
         return_value = return_initial_state
-        return return_value
+        return return_value.astype(np.float32), {"task": self._id}
 
     def seed(self, seed=None):
         random.seed(seed)

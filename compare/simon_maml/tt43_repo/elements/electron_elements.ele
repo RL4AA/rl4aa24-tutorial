@@ -1,0 +1,76 @@
+!-------------------------------------------------------
+!   Elements
+!-------------------------------------------------------
+
+//-------------- Bending Magnets
+MBH: RBEND, L := 0.1755 , apertype = ellipse , aperture = {0.02,0.02}, FINT := fint_h_var, hgap = 0.035, k1 := mbh_k1 ; 		! Bending magnet, horizontal
+
+MBV: RBEND, L := 0.1755 , apertype = ellipse , aperture = {0.02,0.02}, FINT := fint_v_var, hgap = 0.035 ;   		! Bending Magnet, vertical  
+
+	!specification magnetic lenght 0.1755
+		!specification mechanical lenght 0.294
+
+
+//-------------- Quadrupoles
+QUAD: QUADRUPOLE, L := 0.0708,   apertype = ellipse, aperture = {0.02,0.02}; 
+!specification magnetic length 0.0718, but the measured gradient correspond to 
+!a magnetic lenght slightly smaller, i.e. 0.0708 m => this is very important to take
+!into account
+
+
+
+//-------------- Correctors
+COR: KICKER, L := 0.0406,   apertype = ellipse, aperture = {0.02,0.02}; 
+!COR	    : KICKER	  , L := 0.1651; !magnetic length
+	!specification magnetic length 0.1654
+		!specification mechanical lenght 0.073
+
+
+//-------------- Beam position monitors
+BPM         : MONITOR     , L := 0,   apertype = ellipse, aperture = {0.02,0.02};
+BPMShort    : MONITOR     , L := 0.207,   apertype = ellipse, aperture = {0.02,0.02};
+BPMLong     : MONITOR     , L := 0.207,   apertype = ellipse, aperture = {0.02,0.02};
+
+
+//-------------- Beam observation TV monitors based on screens
+
+BTV         : INSTRUMENT     , L := 0.273,   apertype = ellipse, aperture = {0.02,0.02};
+BTV2	    : INSTRUMENT     , L := 0.354,   apertype = ellipse, aperture = {0.02,0.02};
+
+
+
+//-------------- Markers
+Start_line  : MARKER      , L := 0;
+End_line    : MARKER      , L := 0;	! apertype = rectangle, aperture = {0.00025,0.00025};
+Mon         : INSTRUMENT     , L := 0;
+
+//-------------- BeamStopper
+Beam_Stopper : INSTRUMENT , L := 0.15;			!0.069775;
+
+
+
+//-------------- Elements proton and secondary beam line
+bpg412445   : INSTRUMENT  , L := 0.248 , aperture = ellipse, aperture = {0.060,0.060}; !old 0.248
+otr2	    : INSTRUMENT  , L := 0.35 , aperture = ellipse, aperture = {0.06,0.06};
+
+plasmacell:   INSTRUMENT , L = 10    , aperture=ellipse ,aperture={0.020 ,0.020}  ;
+iris: 		  INSTRUMENT , l = 0.001 , aperture=ellipse ,aperture={0.005 ,0.005}  ;
+
+table:        INSTRUMENT , L = 2 ;
+
+MQNBR       : QUADRUPOLE  , L := 0.285;
+
+
+MBXFB       : SBEND       , L := 1;
+
+
+BTVSPS      : INSTRUMENT     , L = 0.448;
+
+HEATER	    : SOLENOID	  , L = 0.025 , KS = 0.00017/0.033;
+
+
+
+
+
+
+

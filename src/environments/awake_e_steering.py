@@ -9,6 +9,8 @@ from gymnasium import spaces
 
 from src.environments.base_backend import ESteeringBaseBackend
 
+# TODO: Beam pipe wall
+
 
 class AwakeESteering(gym.Env):
     """
