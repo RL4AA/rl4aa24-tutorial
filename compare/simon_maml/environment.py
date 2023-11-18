@@ -42,7 +42,7 @@ def generate_optics():
 
 class e_trajectory_simENV(gym.Env):
     def __init__(
-        self, twiss=[], task={}, train=False, **kwargs
+        self, twiss=[], task={}, train=False, **kwargs  # noqa: B006
     ):  # each instance of an environment with new generate_optics()
         self.current_action = None
         self.train = train
@@ -122,7 +122,7 @@ class e_trajectory_simENV(gym.Env):
         goals = []
         print("Number of tasks: " + str(num_tasks))
         if self.train:
-            for i in range(num_tasks):
+            for i in range(num_tasks):  # noqa: B007
                 twiss = generate_optics()
 
                 twiss_bpms = twiss[twiss["keyword"] == "monitor"]
