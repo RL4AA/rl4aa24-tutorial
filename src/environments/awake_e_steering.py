@@ -294,7 +294,7 @@ class CheetahBackend(ESteeringBaseBackend):
             ]
         )
 
-    def set_quadrupoles(self, values: np.ndarray) -> None:
+    def _set_quadrupoles(self, values: np.ndarray) -> None:
         for quad, setting in zip(self._quads, values):
             quad.k1 = torch.as_tensor(setting.astype(np.float32))
 
@@ -329,7 +329,7 @@ class CheetahBackend(ESteeringBaseBackend):
         drifted_and_disturbed_quad_settings = (
             drifted_quad_settings * self._random_quad_disturbance_factors
         )
-        self.set_quadrupoles(drifted_and_disturbed_quad_settings)
+        self._set_quadrupoles(drifted_and_disturbed_quad_settings)
 
         _ = self.segment.track(self.incoming)
 
