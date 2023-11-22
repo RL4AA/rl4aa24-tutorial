@@ -327,10 +327,10 @@ class CheetahBackend(ESteeringBaseBackend):
         return options
 
     def update(self) -> None:
-        quad_shift = self.quad_drift_amplitude * np.sin(
+        quad_shift = 1 + self.quad_drift_amplitude * np.sin(
             self.quad_drift_frequency * self._persistent_step_count
-        )  # TODO: Why did Simon use +1 here?
-        drifted_quad_settings = self._original_quad_settings + quad_shift
+        )
+        drifted_quad_settings = self._original_quad_settings * quad_shift
         drifted_and_disturbed_quad_settings = (
             drifted_quad_settings * self._random_quad_disturbance_factors
         )
