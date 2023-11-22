@@ -18,6 +18,8 @@ class AwakeESteering(gym.Env):
 
     Magnets: TODO
 
+    :param max_steerer_delta: Maximum change in steerer settings per step. Determines
+        the action space limits.
     :param backend: Backend for communication with either a simulation or the control
         system.
     :param backend_args: Arguments for the backend. NOTE that these may be different
@@ -30,6 +32,7 @@ class AwakeESteering(gym.Env):
 
     def __init__(
         self,
+        max_steerer_delta: float = 3e-4,
         backend: Literal["cheetah"] = "cheetah",
         backend_args: Optional[dict] = None,
         render_mode: Optional[Literal["human", "rgb_array"]] = None,
@@ -37,7 +40,9 @@ class AwakeESteering(gym.Env):
         self.observation_space = spaces.Box(
             low=-np.inf, high=np.inf, shape=(10,)
         )  # 1e-2
-        self.action_space = spaces.Box(low=-3e-4, high=3e-4, shape=(10,))
+        self.action_space = spaces.Box(
+            low=-max_steerer_delta, high=max_steerer_delta, shape=(10,)
+        )
 
         # Setup particle simulation or control system backend
         backend_args = backend_args or {}
@@ -122,7 +127,7 @@ class AwakeESteering(gym.Env):
 
     def _get_info(self) -> dict:
         return {
-            # Other info could go here
+            "steerer_settings": self.backend.get_magnets(),
             "backend_info": self.backend.get_info(),  # Info specific to the backend
         }
 
@@ -204,8 +209,9 @@ class CheetahBackend(ESteeringBaseBackend):
         self.incoming = cheetah.ParameterBeam.from_twiss(
             beta_x=torch.tensor(5.0),
             beta_y=torch.tensor(5.0),
-            emittance_x=torch.tensor(1.93e-7),
-            emittance_y=torch.tensor(1.93e-7),
+            emittance_x=torch.tensor(0.000000269),
+            emittance_y=torch.tensor(0.000000269),
+            energy=torch.tensor(0.019006870e9),  # 0.019006870 GeV
         )
 
         # Utility variables
@@ -240,8 +246,7 @@ class CheetahBackend(ESteeringBaseBackend):
             return cheetah.Quadrupole(
                 name=sanitized_name,
                 length=torch.as_tensor(row.L),
-                # k1=torch.as_tensor(row.K1L),
-                k1=torch.as_tensor(row.K1L / row.L),  # TODO: Correct?
+                k1=torch.as_tensor(row.K1L / row.L),  # K1L / L matches MADX in values
             )
         elif row.KEYWORD == "INSTRUMENT":
             return cheetah.Drift(name=sanitized_name, length=torch.as_tensor(row.L))
