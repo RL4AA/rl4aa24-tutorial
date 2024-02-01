@@ -11,7 +11,7 @@ Homepage for RL4AA Collaboration: [https://rl4aa.github.io/](https://rl4aa.githu
 ## Python tutorial: meta reinforcement learning implementation example
 
 - Github repository containing the material: [https://github.com/RL4AA/RL4AA23](https://github.com/RL4AA/rl4aa24-tutorial/)
-- Tutorial in slide form: [here](https://rl4aa.github.io/rl4aa24-tutorial/index.html#/)
+- Tutorial in slide form: [here](https://rl4aa.github.io/rl4aa24-tutorial/)
 
 ## Getting started
 
