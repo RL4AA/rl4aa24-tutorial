@@ -1,8 +1,0 @@
-!****************************
-! Beam specification
-!****************************
-
-!option,debug,-echo;
-!sigt=TBUNCH*CLIGHT*(BEAM->PC/BEAM->ENERGY)
-BEAM, particle=electron, PC=19e-3, exn=10e-6, eyn=10e-6, npart=3e9, bunched, sigt=TBUNCH*CLIGHT*(BEAM->PC/BEAM->ENERGY);
-
