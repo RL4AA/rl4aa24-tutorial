@@ -7514,7 +7514,7 @@ In this tutorial notebook we will implement all the basic components of a <b>Met
 <h2 style="color: #b51f2a">Getting started</h2>
 <h3 id="Using-venv">Using venv<a class="anchor-link" href="#Using-venv">¶</a></h3><p><em>If you don't have conda installed:</em></p>
 <p>Alternatively, you can create the virtual env with</p>
-<div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>-n<span class="w"> </span>rl-tutorial
+<div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>rl-tutorial
 </pre></div>
 <p>and activate the env with <code>$ source &lt;venv&gt;/bin/activate</code> (bash) or <code>C:&gt; &lt;venv&gt;/Scripts/activate.bat</code> (Windows)</p>
 <p>Then, install the packages with <code>pip</code> within the activated environment</p>
@@ -7544,8 +7544,8 @@ In this tutorial notebook we will implement all the basic components of a <b>Met
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 style="color: #b51f2a"> AWAKE (The Advanced Proton Driven Plasma Wakefield Acceleration Experiment)</h2>
-<p>AWAKE is an accelerator R&amp;D project based at CERN. It investigates the use of plasma wakefields driven by a proton bunch to accelerate charged particles.</p>
+<h2 style="color: #b51f2a"> AWAKE Accelerator</h2>
+<p>AWAKE (The Advanced Proton Driven Plasma Wakefield Acceleration Experiment) is an accelerator R&amp;D project based at CERN. It investigates the use of plasma wakefields driven by a proton bunch to accelerate charged particles.</p>
 <ul>
 <li>The proton beam from the SPS is used to drive wakefields in a plasma cell.</li>
 <li>The wakefields in the plasma accelerate electrons coming from another beamline, like a surfer is accelerated by ocean waves.</li>
@@ -7561,10 +7561,11 @@ In this tutorial notebook we will implement all the basic components of a <b>Met
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 style="color: #b51f2a"> AWAKE (The Advanced Proton Driven Plasma Wakefield Acceleration Experiment)</h2>
+<h2 style="color: #b51f2a"> AWAKE Accelerator</h2>
 <p>
+<p>(The Advanced Proton Driven Plasma Wakefield Acceleration Experiment)</p>
 </p>
-<p><img alt="No description has been provided for this image" src="img/awake.png" style="width:40%; margin:auto;"/></p>
+<p><img alt="No description has been provided for this image" src="img/awake.png" style="width:60%; margin:auto;"/></p>
 <ul>
 <li><strong>Momentum</strong>: 10-20 MeV/c</li>
 <li><strong>Electrons per bunch</strong>: 1.2e9</li>
@@ -7601,16 +7602,20 @@ In this tutorial notebook we will implement all the basic components of a <b>Met
 <h2 style="color: #b51f2a">Formulating the RL problem</h2>
 <p>The problem is formulated in an episodic manner.</p>
 <h3 style="color: #b51f2a">Actions</h3>
-The actions are the strenghts of 10 corrector magnets that can steer the beam.
-They are normalized to [-1, 1], corresponding to $\pm$ 100 mm.
+The actuators are the strengths of 10 corrector magnets that can steer the beam.
+They are normalized to [-1, 1]. 
+In this tutorial, we apply the action by adding a delta change $\Delta a$ to the current magnet strengths .
 
 <h3 style="color: #b51f2a">States/Observations</h3>
-The observations are the readings of ten beam position monitors (BPMs), which read the position of the beam at a particular point in the beamline.
+The observations are the readings of ten beam position monitors (BPMs), which read the position of the beam at a particular point in the beamline. The states are also normalized to [-1,1], corresponding to $\pm$ 100 mm in the real accelerator.
 
 <h3 style="color: #b51f2a">Reward</h3>
 The reward is the negative RMS value of the distance to the target trajectory. 
 
-
+<p>$$
+r(\bm{O}) = - \sqrt{ \frac{1}{10} \sum_{i=1}^{10} (O_{i} - O^{\text{target}}_{i})^2},
+$$</p>
+<p>where $\bm{O}^{\text{target}}=\vec{0}$ for a centered orbit.</p>
 </div>
 </div>
 </div>
