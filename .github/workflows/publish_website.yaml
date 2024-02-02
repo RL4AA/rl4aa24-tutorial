@@ -32,6 +32,13 @@ jobs:
                 cp -r img/ temp/img/
                 cp tutorial.slides.html temp/index.html
             
+            - name: Fetch latest changes from remote branch
+              run: |
+                git fetch origin website
+                git checkout website
+                git pull origin website
+                git checkout main
+            
             - name: Push files to website branch
               uses: ad-m/github-push-action@master
               with:
