@@ -26,8 +26,10 @@ jobs:
               run: |
                 mkdir temp
                 cp -r img/ temp/img/
-                jupyter nbconvert tutorial.ipynb --to slides --reveal-prefix reveal.js --output temp/index.html
+                jupyter nbconvert tutorial.ipynb --to slides --reveal-prefix reveal.js
+                mv tutorial.slides.html temp/index.html
                 ls -R temp
+                rm -r meta-rl/
 
             - name: Deploy
               uses: s0/git-publish-subdir-action@develop
