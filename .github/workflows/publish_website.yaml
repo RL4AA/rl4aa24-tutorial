@@ -23,21 +23,14 @@ jobs:
               run: pip install notebook
 
             - name: Convert notebook to HTML
-              run: jupyter nbconvert tutorial.ipynb --to slides --reveal-prefix reveal.js
+              run: 
             
 
-            - name: Add files
+            - name: Export the notebook and Add files
               run: |
                 mkdir temp
                 cp -r img/ temp/img/
-                cp tutorial.slides.html temp/index.html
-            
-            - name: Fetch latest changes from remote branch
-              run: |
-                git fetch origin website
-                git checkout website
-                git pull origin website
-                git checkout main
+                jupyter nbconvert tutorial.ipynb --to slides --reveal-prefix reveal.js --output temp/index.html
             
             - name: Push files to website branch
               uses: ad-m/github-push-action@master
