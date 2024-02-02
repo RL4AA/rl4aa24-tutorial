@@ -33,7 +33,7 @@ jobs:
               uses: s0/git-publish-subdir-action@develop
               env:
                 REPO: self
-                BRANCH: webiste
+                BRANCH: website
                 FOLDER: temp
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                 
