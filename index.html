@@ -7462,7 +7462,6 @@ In this tutorial notebook we will implement all the basic components of a <b>Met
 <li>Part I: Quick introduction</li>
 <li>Part II: Running PPO on our problem</li>
 <li>Part III: Running MAML on our problem</li>
-<li>Part IV: Model-based RL</li>
 </ul>
 </div>
 </div>
@@ -7476,9 +7475,12 @@ In this tutorial notebook we will implement all the basic components of a <b>Met
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 style="color: #b51f2a">Getting started</h2>
 <ul>
-<li>The code is tested on Python 3.9 and 3.10.</li>
-<li>You should have conda installed.</li>
-<li>Start by cloning locally the repository of the tutorial:</li>
+<li><p>You will need <strong>Python 3.9 or higher</strong> to run this code ❗</p>
+</li>
+<li><p>You will require about <strong>1 GB of free disk space</strong> ❗</p>
+</li>
+<li><p>Start by cloning locally the repository of the tutorial:</p>
+</li>
 </ul>
 <div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/RL4AA/rl4aa24-tutorial.git
 </pre></div>
@@ -7493,7 +7495,6 @@ In this tutorial notebook we will implement all the basic components of a <b>Met
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 style="color: #b51f2a">Getting started</h2>
-<p><em>Note</em>: Installing the required packages would require about 1 GB of disk space.</p>
 <h3 id="Using-Conda">Using Conda<a class="anchor-link" href="#Using-Conda">¶</a></h3><p>If you don't have conda installed already, you can install the <code>miniconda</code> as <a href="https://docs.conda.io/projects/miniconda/en/latest/miniconda-install.html">described here</a>.</p>
 <div class="highlight"><pre><span></span>conda<span class="w"> </span>env<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>environment.yml
 </pre></div>
@@ -7546,26 +7547,8 @@ In this tutorial notebook we will implement all the basic components of a <b>Met
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 style="color: #b51f2a"> AWAKE Accelerator</h2>
 <p>AWAKE (The Advanced Proton Driven Plasma Wakefield Acceleration Experiment) is an accelerator R&amp;D project based at CERN. It investigates the use of plasma wakefields driven by a proton bunch to accelerate charged particles.</p>
-<ul>
-<li>The proton beam from the SPS is used to drive wakefields in a plasma cell.</li>
-<li>The wakefields in the plasma accelerate electrons coming from another beamline, like a surfer is accelerated by ocean waves.</li>
-<li>Plasmas can support extremely strong electric fields, with accelerating gradients of GV/m over meter-scale distances, which can reduce the size of future accelerators.</li>
-</ul>
-</div>
-</div>
-</div>
-</div></section></section><section><section>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 style="color: #b51f2a"> AWAKE Accelerator</h2>
-<p>
-<p>(The Advanced Proton Driven Plasma Wakefield Acceleration Experiment)</p>
-</p>
-<p><img alt="No description has been provided for this image" src="img/awake.png" style="width:50%; margin:auto;"/></p>
+<p>Plasmas can support extremely strong electric fields, with accelerating gradients of GV/m over meter-scale distances, which can reduce the size of future accelerators.</p>
+<img alt="No description has been provided for this image" src="img/awake.png" style="float: left; width: 50%; margin-right: 8%; margin-bottom: 0.5em;"/>
 <ul>
 <li><strong>Momentum</strong>: 10-20 MeV/c</li>
 <li><strong>Electrons per bunch</strong>: 1.2e9</li>
@@ -7573,7 +7556,7 @@ In this tutorial notebook we will implement all the basic components of a <b>Met
 <li><strong>Pulse repetition rate</strong>: 10 Hz</li>
 </ul>
 <h3 style="color: #b51f2a"> Reference</h3>
-<a href="https://www.nature.com/articles/s41586-018-0485-4">"Acceleration of electrons in the plasma wakefield of a proton bunch" - Nature volume 561, pages363–367 (2018)</a>
+<a href="https://www.nature.com/articles/s41586-018-0485-4">"Acceleration of electrons in the plasma wakefield of a proton bunch" - Nature volume 561(2018)</a>
 </div>
 </div>
 </div>
@@ -7585,8 +7568,10 @@ In this tutorial notebook we will implement all the basic components of a <b>Met
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 style="color: #b51f2a">The accelerator problem we want to solve</h2>
-<p>The goal is to minimize the distance $\Delta x_i$ of an initial beam trajectory to a target trajectory at different points $i$ (here marked as "position") in the accelerator in the least amount of steps.</p>
-<p><img alt="No description has been provided for this image" src="img/steering_problem.png" style="width:70%; margin:auto;"/></p>
+<p>The goal is to <strong>minimize</strong> the distance $\Delta x_i$ of an <strong>initial beam trajectory</strong> to a <strong>target trajectory</strong> at different points $i$ across the accelerator(here marked as "position") in the least amount of steps.</p>
+<center>
+<img alt="No description has been provided for this image" src="img/steering_problem.png" style="width:70%; margin:auto;">
+</img></center>
 <h3 style="color: #b51f2a">Reference</h3>
 <a href="https://inspirehep.net/files/f30ed3557a9acef940574f30c68c1ee2">"Ultra fast reinforcement learning demonstrated at CERN AWAKE" - IPAC (2023)</a>
 </div>
@@ -7609,11 +7594,13 @@ In this tutorial, we apply the action by adding a delta change $\Delta a$ to the
 <h3 style="color: #b51f2a">States/Observations</h3>
 The observations are the readings of ten beam position monitors (BPMs), which read the position of the beam at a particular point in the beamline. The states are also normalized to [-1,1], corresponding to $\pm$ 100 mm in the real accelerator.
 
-
+<center>
+<img alt="No description has been provided for this image" src="img/awake_lattice.png" style="width:70%; margin:auto;"/>
+</center>
 </div>
 </div>
 </div>
-</div>
+</div></section></section><section><section>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -7625,9 +7612,12 @@ The observations are the readings of ten beam position monitors (BPMs), which re
 The reward is the negative RMS value of the distance to the target trajectory. 
 
 <p>$$
-r(O) = - \sqrt{ \frac{1}{10} \sum_{i=1}^{10} (O_{i} - O^{\text{target}}_{i})^2},
+r(x) = - \sqrt{ \frac{1}{10} \sum_{i=1}^{10} (x_{i} - x^{\text{target}}_{i})^2},
 $$</p>
-<p>where $O^{\text{target}}=\vec{0}$ for a centered orbit.</p>
+<p>where $x^{\text{target}}=\vec{0}$ for a centered orbit.</p>
+<center>
+<img alt="No description has been provided for this image" src="img/steering_problem.png" style="width:70%; margin:auto;"/>
+</center>
 </div>
 </div>
 </div>
@@ -7668,19 +7658,24 @@ In this tutorial we will use:
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 style="color: #b51f2a">Formulating the RL problem</h2>
 <h3 style="color: #b51f2a">Environments/Tasks</h3>
+<p>
+<center>
+<font size="8"> 
+    1 task / 1 environment =  1 set of fixed quadrupole strengths
+    </font>
+</center>
+</p>
+<p>In this tutorial we will use a variety of environments or tasks:</p>
 <ul>
-<li><b>In this tutorial we will use a variety of environments or tasks.</b><ul>
-<li>Fixed tasks for evaluation.</li>
-<li>Randomly sampled tasks for meta-training.</li>
-</ul>
+<li><p style="color:blue">Fixed tasks for evaluation ❗</p>
 </li>
-<li>They are defined by the particular strength of the quadrupole magnets of the AWAKE beamline. This means that different magnet strength combinations will give place to different environments/tasks.<ul>
-<li>A set of fixed quadrupole strengths is called "optics".</li>
-<li>We generate them from the original optics, adding a random scaling factor.</li>
-</ul>
+<li><p style="color:blue">Randomly sampled tasks from a task distribution for meta-training ❗</p>
 </li>
 </ul>
-<p>Optics might be different from what we expect in real life.</p>
+<p>We generate them from the original, nominal optics, adding a random scaling factor to the quadrupole strengths.</p>
+<center>
+<img alt="No description has been provided for this image" src="img/awake_lattice.png" style="width:70%; margin:auto;"/>
+</center>
 </div>
 </div>
 </div>
@@ -7699,7 +7694,9 @@ In this tutorial we will use:
     \Delta s &amp;= \mathbf{R}\Delta a\\
 \end{align}</p>
 <br/>
-<p><img alt="No description has been provided for this image" src="img/response_matrix_tasks.png" style="width:60%; margin:auto;"/></p>
+<center>
+<img alt="No description has been provided for this image" src="img/response_matrix_tasks.png" style="width:60%; margin:auto;"/>
+</center>
 </div>
 </div>
 </div>
@@ -7712,12 +7709,16 @@ In this tutorial we will use:
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 style="color: #b51f2a">Defining a benchmark policy</h2>
 <p>During this tutorial we want to compare the trained policies we obtain with different methods to a benchmark policy.</p>
-<p>For this problem, our "benchmark policy" is just the inverse of the environment's <b>response matrix</b>.</p>
-<p>More specifically, we have:
+<p>For this problem, our <strong>benchmark policy</strong> is just the inverse of the environment's <b>response matrix</b>.</p>
+<p>$\implies$ Actions from <strong>benchmark policy</strong>:
 \begin{align}
     \Delta a &amp;= \mathbf{R}^{-1}\Delta s
 \end{align}</p>
-<p>$\implies$ The resolution of the problem can be theoretically achieved by applying the inverse response matrix, $\mathbf{R}^{-1}$, directly to the system.</p>
+<p>$\implies$ Actions from <strong>RL policy</strong>:
+With the policy we get the actions:</p>
+<center>
+<img alt="No description has been provided for this image" src="img/policy.png" style="width:20%; margin:auto;"/>
+</center>
 </div>
 </div>
 </div>
@@ -7729,13 +7730,10 @@ In this tutorial we will use:
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 style="color: #b51f2a">Cheatsheet on RL training 🧐</h2>
-Consult at will during the tutorial if you are not familiar with training RL agents!
-
+<img alt="No description has been provided for this image" src="img/rl_training.png" style="float: left; width: 50%; margin-right: 5%; margin-bottom: 0.5em;"/>
 <h3 style="color: #b51f2a">Training stage</h3>
 During the training phase experience is gathered in a buffer that is used to update the weights of the policy through gradient descent.
 The samples in the buffer can be passed to the gradient descent algorithm in batches, and gradient descent is performed a number of epochs. This is how the agent "learns".
-
-<p><img alt="No description has been provided for this image" src="img/rl_training.png" style="width:40%; margin:auto;"/></p>
 <h3 style="color: #b51f2a">Evaluation/validation stage</h3>
 The policy is fixed (no weight updates) and only forwards passes are performed.
 
@@ -7759,7 +7757,10 @@ The policy is fixed (no weight updates) and only forwards passes are performed.
 <p>Side note:</p>
 <ul>
 <li>The benchmark policy will not immediately find the settings for the target trajectory, because the actions are scaled down for safety reasons so that the maximum step is within $[-1,1]$ in the normalized space.</li>
-<li>We can then compare the metrics of both policies.</li>
+<li>We can then compare the metrics of both policies.<center>
+<img alt="No description has been provided for this image" src="img/steering_problem.png" style="width:50%; margin:auto;">
+</img></center>
+</li>
 </ul>
 </div>
 </div>
@@ -7773,10 +7774,12 @@ The policy is fixed (no weight updates) and only forwards passes are performed.
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 style="color: #b51f2a">So how do we compare policies in the evaluation stage? 🧐</h2>
 <ul>
-<li>There are 5 fixed evaluation tasks.</li>
+<li>There are <strong>5 fixed evaluation tasks</strong>.</li>
 <li>We can choose to evaluate our policy to one of them, several, or all of them.</li>
 </ul>
-<p><img alt="No description has been provided for this image" src="img/task_overview_evaluation_tasks.png" style="width:60%; margin:auto;"/></p>
+<center>
+<img alt="No description has been provided for this image" src="img/task_overview_evaluation_tasks.png" style="width:60%; margin:auto;"/>
+</center>
 </div>
 </div>
 </div>
@@ -7819,13 +7822,14 @@ The policy is fixed (no weight updates) and only forwards passes are performed.
 <ul>
 <li><code>n_env</code> = 1</li>
 <li><code>n_steps</code> = 2048 (default params)</li>
-<li><code>buffer_size</code> = n_steps x n_env = 2048</li>
 <li><code>n_epochs</code> = 10 (default params)</li>
-<li>We backpropagate 10 times everytime we fill the buffer<ul>
-<li>backprops = <code>int((total_timesteps / buffer_size)) * n_epochs</code></li>
+<li><code>buffer_size</code> = <code>n_steps</code> x <code>n_env</code> = 2048</li>
+<li>backprops = <code>(total_timesteps / buffer_size) * n_epochs</code></li>
 </ul>
-</li>
-</ul>
+<h2 style="color:#038aa1;">Questions 💻</h2>
+<p>Consider <code>total_timesteps = 100</code>.
+This parameter specifies the total number of timesteps (or steps) that the training process should run across all environments.</p>
+<p style="color:#038aa1;">$\implies$ Considering the PPO agent settings: will we fill the buffer? what do you expect that happens?</p>
 </div>
 </div>
 </div>
@@ -7837,9 +7841,7 @@ The policy is fixed (no weight updates) and only forwards passes are performed.
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h3 style="color:#038aa1;">Questions 💻</h3>
-<p>Go to <code>ppo.py</code> let it train for 100 steps. This can be done by providing the command line argument <code>--steps [num_steps]</code></p>
-<p>Run it in the terminal with <code>python ppo.py --train --steps 100</code></p>
-<p style="color:#038aa1;">$\implies$ Considering the PPO agent settings: will we fill the buffer? what do you expect that happens?</p>
+<p>Run the code in the terminal with <code>python ppo.py --train --steps 100</code> and observe the plot that pops-up.</p>
 <p style="color:#038aa1;">$\implies$ What is the difference in episode length between the benchmark policy and PPO? </p>
 <p style="color:#038aa1;">$\implies$ Look at the cumulative episode length, which policy takes longer?</p>
 <p style="color:#038aa1;">$\implies$ Compare both cumulative rewards, which reward is higher and why?</p>
@@ -7854,7 +7856,7 @@ The policy is fixed (no weight updates) and only forwards passes are performed.
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 style="color:#038aa1;">If you didn't manage to run here is the plot</h3>
+<h3 style="color:#038aa1;">Plot for 100 steps</h3>
 <br/>
 <p><img alt="No description has been provided for this image" src="img/ppo_untrained.png" style="width:100%; margin:auto;"/></p>
 </div>
@@ -7870,6 +7872,8 @@ The policy is fixed (no weight updates) and only forwards passes are performed.
 <h3 style="color:#038aa1;">Questions 💻</h3>
 <p style="color:#038aa1;">Set <code>total_timesteps</code> to 50,000 this time. Run it in the terminal with <code>python ppo.py --train --steps 50000</code></p>
 <p style="color:#038aa1;">$\implies$ What are the main differences between the untrained and trained PPO policies?</p>
+<p style="color:#038aa1;">Train a bit longer setting <code>total_timesteps</code> to 100,000. Run it in the terminal with <code>python ppo.py --train --steps 100000</code></p>
+<p style="color:#038aa1;">$\implies$ In how many steps does it converge compared to the other training steps?</p>
 </div>
 </div>
 </div>
@@ -7880,7 +7884,7 @@ The policy is fixed (no weight updates) and only forwards passes are performed.
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 style="color:#038aa1;">Questions</h3>
+<h3 style="color:#038aa1;">Plot for 50000 steps</h3>
 <br/>
 <p><img alt="No description has been provided for this image" src="img/ppo.png" style="width:100%; margin:auto;"/></p>
 </div>
@@ -7907,11 +7911,12 @@ The policy is fixed (no weight updates) and only forwards passes are performed.
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 style="color: #b51f2a">Meta RL</h2>
-<p>Meta-learning occurs when one learning system progressively adjusts the operation of a second learning system, such that the latter operates with increasing speed and efficiency</p>
-<p>This scenario is often described in terms of two ‘loops’ of learning, an ‘outer loop’ that uses its experiences over many task contexts to gradually adjust parameters that govern the operation of an ‘inner loop’, so that the inner loop can adjust rapidly to new tasks (see Figure 1). Meta-RL refers to the case where both the inner and outer loop implement RL algorithms, learning from reward outcomes and optimizing toward behaviors that yield maximal reward.</p>
-<p>There are MANY flavors of meta RL</p>
-<p><img alt="No description has been provided for this image" src="img/meta_loop.png" style="width:60%; margin:auto;"/>
-<a href="https://www.sciencedirect.com/science/article/pii/S1364661319300610?via%3Dihub">"Reinforcement Learning, Fast and Slow" (2019)</a></p>
+<p>Meta-learning occurs when one learning system progressively adjusts the operation of a second learning system, such that the latter operates with increasing speed and efficiency. It is also called <strong>"learning to learn"</strong>. There are <strong>many</strong> flavors of meta RL</p>
+<p>This scenario is often described in terms of two ‘loops’ of learning, an <strong>outer loop (meta training)</strong> that uses its experiences over many task contexts to gradually adjust parameters that govern the operation of an <strong>inner loop (adaptation)</strong>, so that the inner loop can adjust rapidly to new tasks.</p>
+<center>
+<img alt="No description has been provided for this image" src="img/meta_loop.png" style="width:60%; margin:auto;"/>
+</center>
+<a href="https://www.sciencedirect.com/science/article/pii/S1364661319300610?via%3Dihub">"Reinforcement Learning, Fast and Slow" (2019)</a>
 </div>
 </div>
 </div>
@@ -7928,9 +7933,9 @@ The policy is fixed (no weight updates) and only forwards passes are performed.
 <li>We have a <b>meta policy</b> $\phi(\theta)$, where $\theta$ are the weights of a neural network. The meta policy starts untrained $\phi_0$.</li>
 </ul>
 <h3 style="color: #b51f2a">Step 1: outer loop</h3>
-We randomly sample a number of tasks $i$ (in our case $i\in \{1,\dots,8\}$ different lattices, called <code>meta-batch-size</code> in the code) from a task distribution, each one with its particular initial task policy $\varphi_{0}^i=\phi_0$.
+We randomly sample a number of tasks $i$ (in our case $i\in \{1,\dots,8\}$ different lattices, called <code>meta-batch-size</code> in the code) from a task distribution, each one with its particular initial <b>task policy</b> $\varphi_{0}^i=\phi_0$.
 
-<h3 style="color: #b51f2a">Step 2: inner loop</h3>
+<h3 style="color: #b51f2a">Step 2: inner loop (adaptation)</h3>
 For each task, we gather experience for several episodes, store the experience, and use it to perform gradient descent and update the weights of each task policy $\varphi_{0}^i \rightarrow \varphi_{k}^i$ for $k$ gradient descent steps.
 
 
@@ -7945,13 +7950,45 @@ For each task, we gather experience for several episodes, store the experience, 
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 style="color: #b51f2a">Optimization-based meta RL in this tutorial</h2>
-<h3 style="color: #b51f2a">Step 3: outer loop</h3>
-We sum the losses calculated for each task policy and perform gradient descent on the meta policy
-$\phi_0 \rightarrow \phi_1$
-
-<p><img alt="No description has been provided for this image" src="img/meta_gradient.png" style="width:40%; margin:auto;"/></p>
+<h3 style="color: #b51f2a">Step 3: outer loop (meta training)</h3>
+<p>We sum the losses calculated for each <strong>task policy</strong> and perform gradient descent on the <strong>meta policy</strong>
+$\phi_0 \rightarrow \phi_1$</p>
+<center>
+<img alt="No description has been provided for this image" src="img/meta_gradient.png" style="width:40%; margin:auto;"/>
+</center>
 <p>$\beta$ is the meta learning rate, $\alpha$ is the fast learning rate (for inner loop gradient updates)</p>
-<p><img alt="No description has been provided for this image" src="img/maml.png" style="width:40%; margin:auto;"/></p>
+<center>
+<img alt="No description has been provided for this image" src="img/maml.png" style="width:40%; margin:auto;"/>
+</center>
+</div>
+</div>
+</div>
+</div></section></section><section><section>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 style="color: #b51f2a">Meta RL: summary</h2>
+<p>We start with a random meta policy, and we initialize the task policies with it: $\phi_0 = \varphi_{0}^i$</p>
+<div class="highlight"><pre><span></span><span class="n">meta_step</span> <span class="mi">0</span><span class="p">:</span>
+   <span class="n">sample</span> <span class="mi">8</span> <span class="n">tasks</span>
+   <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">num_steps</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">fb</span> <span class="ow">in</span> <span class="n">fast_batch_size</span><span class="p">:</span>
+                <span class="n">perform</span> <span class="mi">1</span> <span class="n">episode</span><span class="p">:</span>
+                    <span class="n">reset</span> <span class="n">corrector_strength</span>
+                    <span class="k">while</span> <span class="ow">not</span> <span class="n">stopped</span><span class="p">:</span>
+                        <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</pre></div>
+<p>We have gathered experience and trained 8 task policies:
+$$
+\varphi_{0}^1 \rightarrow \varphi_{k}^1 \\
+\vdots \\
+\varphi_{0}^8 \rightarrow \varphi_{k}^8 \\
+$$</p>
+<p>The losses from the task policies are summed, and gradient descent is applied to update the meta policy $\phi_0 \rightarrow \phi_1$</p>
 </div>
 </div>
 </div>
@@ -7978,17 +8015,20 @@ $\phi_0 \rightarrow \phi_1$
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 style="color: #b51f2a">Evaluation of random policy 💻</h2>
+<h2 style="color: #b51f2a">Evaluation of a random task policy 💻</h2>
 <ul>
 <li>We will look at the <strong>inner loop</strong> only.</li>
 <li>We consider only 1 task for now (task 0), from 5 fixed evaluation tasks.</li>
 <li>The policy $\varphi_0^0$ starts as random and adapts for 500 steps (and show the progress every 50 steps).</li>
+<li>This code does the training and evaluation.</li>
 </ul>
-<p>Run the following code to train the task policy $\varphi_0^0$ for 500 steps:</p>
+<p style="color:#038aa1;">$\implies$ Run the following code to train the task policy $\varphi_0^0$ for 500 steps:</p>
 <p><code>python test.py --experiment-name tutorial --experiment-type adapt_from_scratch --num-batches 500 --plot-interval 50 --task-ids 0</code></p>
 <p>Once it has run, you can look at the adaptation progress by running:</p>
 <p><code>python read_out_train.py --experiment-name tutorial --experiment-type adapt_from_scratch</code></p>
-<p>You can run now several tasks.</p>
+<p style="color:#038aa1;">$\implies$ Run it now for all tasks:</p>
+<p><code>python test.py --experiment-name tutorial --experiment-type adapt_from_scratch --num-batches 500 --plot-interval 50 --task-ids 0 1 2 3 4</code></p>
+<p style="color:#038aa1;">$\implies$ Save the plot for comparison later</p>
 </div>
 </div>
 </div>
@@ -8004,7 +8044,9 @@ $\phi_0 \rightarrow \phi_1$
 <li>If the code didn't work for you, this is the plot you should get (see below).</li>
 <li>We can see that it fails at the beginning, but it learns with time.</li>
 </ul>
-<p><img alt="No description has been provided for this image" src="img/random_policy.png" style="width:60%; margin:auto;"/></p>
+<center>
+<img alt="No description has been provided for this image" src="img/random_policy.png" style="width:60%; margin:auto;"/>
+</center>
 </div>
 </div>
 </div>
@@ -8017,13 +8059,9 @@ $\phi_0 \rightarrow \phi_1$
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 style="color: #b51f2a">Meta training</h2>
 <h3 style="color: #b51f2a">Training</h3>
-We will now train the meta policy $\phi_0$ using randomly sampled tasks.
-
-<p>You can run the meta-training via (but don't run it now!):</p>
-<div class="highlight"><pre><span></span>python<span class="w"> </span>train.py<span class="w"> </span>--experiment-name<span class="w"> </span>&lt;give_a_meaningful_name&gt;
-</pre></div>
-<p>Note: The meta-training takes about 30 mins for the current configuration.
+<p>The meta-training takes about 30 mins for the current configuration.
 Therefore we have provided a pre-trained policy which can be used for evaluation later.</p>
+<p>Meta-learning consumes a considerable amount of data.</p>
 </div>
 </div>
 </div>
@@ -8034,14 +8072,15 @@ Therefore we have provided a pre-trained policy which can be used for evaluation
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 style="color: #b51f2a">Evaluation of the trained meta-policy 💻</h3>
+<h3 style="color: #b51f2a">Evaluation of the pre-trained meta-policy 💻</h3>
 <p>We will now use a pre-trained policy located in <code>awake/pretrained_policy.th</code> and evalulate it against a certain number of fixed tasks.</p>
+<p style="color:#038aa1;">$\implies$ Run the following code:</p>
 <p><code>python test.py --experiment-name tutorial --experiment-type test_meta --use-meta-policy --policy awake/pretrained_policy.th --num-batches 500 --plot-interval 50 --task-ids 0 1 2 3 4</code></p>
 <ul>
 <li>use  <code>--task-ids 0 1 2 3 4</code> to run evaluation against all 5 tasks, or e.g. <code>--task-ids 0</code> to evaluate only for task 0.</li>
 <li>here we set the flag <code>--use-meta-policy</code> so that it uses the pre-trained policy.</li>
 </ul>
-<p>Afterwards, you can look at the adaptation progress by running:</p>
+<p style="color:#038aa1;">$\implies$ Afterwards, you can look at the adaptation progress by running:</p>
 <p><code>python read_out_train.py --experiment-name tutorial --experiment-type test_meta</code></p>
 </div>
 </div>
@@ -8054,7 +8093,7 @@ Therefore we have provided a pre-trained policy which can be used for evaluation
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h3 style="color: #b51f2a">Evaluation of the trained meta-policy</h3>
-<p style="color:#038aa1;">$\implies$ What difference can you see compared to the untrained policy?</p>
+<p style="color:#038aa1;">$\implies$ What difference can you see compared to the untrained policy (previous plot saved)?</p>
 <img alt="No description has been provided for this image" src="img/random_policy.png" style="float: left; width: 40%; margin-right: 1%; margin-bottom: 0.5em;"/>
 <img alt="No description has been provided for this image" src="img/trained_meta_policy.png" style="float: left; width: 40%; margin-right: 1%; margin-bottom: 0.5em;"/>
 </div>
