@@ -7565,7 +7565,7 @@ In this tutorial notebook we will implement all the basic components of a <b>Met
 <p>
 <p>(The Advanced Proton Driven Plasma Wakefield Acceleration Experiment)</p>
 </p>
-<p><img alt="No description has been provided for this image" src="img/awake.png" style="width:60%; margin:auto;"/></p>
+<p><img alt="No description has been provided for this image" src="img/awake.png" style="width:50%; margin:auto;"/></p>
 <ul>
 <li><strong>Momentum</strong>: 10-20 MeV/c</li>
 <li><strong>Electrons per bunch</strong>: 1.2e9</li>
@@ -7609,13 +7609,25 @@ In this tutorial, we apply the action by adding a delta change $\Delta a$ to the
 <h3 style="color: #b51f2a">States/Observations</h3>
 The observations are the readings of ten beam position monitors (BPMs), which read the position of the beam at a particular point in the beamline. The states are also normalized to [-1,1], corresponding to $\pm$ 100 mm in the real accelerator.
 
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 style="color: #b51f2a">Formulating the RL problem</h2>
 <h3 style="color: #b51f2a">Reward</h3>
 The reward is the negative RMS value of the distance to the target trajectory. 
 
 <p>$$
-r(\bm{O}) = - \sqrt{ \frac{1}{10} \sum_{i=1}^{10} (O_{i} - O^{\text{target}}_{i})^2},
+r(O) = - \sqrt{ \frac{1}{10} \sum_{i=1}^{10} (O_{i} - O^{\text{target}}_{i})^2},
 $$</p>
-<p>where $\bm{O}^{\text{target}}=\vec{0}$ for a centered orbit.</p>
+<p>where $O^{\text{target}}=\vec{0}$ for a centered orbit.</p>
 </div>
 </div>
 </div>
@@ -7746,8 +7758,8 @@ The policy is fixed (no weight updates) and only forwards passes are performed.
 </ul>
 <p>Side note:</p>
 <ul>
-<li>The benchmark policy will not immediately find the settings for the target trajectory, because the actions are scaled down for safety reasons.</li>
-<li>We can then compare metrics of both policies.</li>
+<li>The benchmark policy will not immediately find the settings for the target trajectory, because the actions are scaled down for safety reasons so that the maximum step is within $[-1,1]$ in the normalized space.</li>
+<li>We can then compare the metrics of both policies.</li>
 </ul>
 </div>
 </div>
@@ -7825,7 +7837,7 @@ The policy is fixed (no weight updates) and only forwards passes are performed.
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h3 style="color:#038aa1;">Questions 💻</h3>
-<p style="color:#038aa1;">Go to <code>ppo.py</code> and change the <code>total_timesteps</code> to 100. This can be done by providing the command line argument <code>--steps [num_steps]</code> Run it in the terminal with <code>python ppo.py --steps 100</code></p>
+<p style="color:#038aa1;">Go to <code>ppo.py</code> and change the <code>total_timesteps</code> to 100. This can be done by providing the command line argument <code>--steps [num_steps]</code> Run it in the terminal with <code>python ppo.py --train --steps 100</code></p>
 <p style="color:#038aa1;">$\implies$ Considering the PPO agent settings: will we fill the buffer? what do you expect that happens?</p>
 <p style="color:#038aa1;">$\implies$ What is the difference in episode length between the benchmark policy and PPO? </p>
 <p style="color:#038aa1;">$\implies$ Look at the cumulative episode length, which policy takes longer?</p>
@@ -7855,7 +7867,7 @@ The policy is fixed (no weight updates) and only forwards passes are performed.
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h3 style="color:#038aa1;">Questions 💻</h3>
-<p style="color:#038aa1;">Set <code>total_timesteps</code> to 50,000 this time. Run it in the terminal with <code>python ppo.py --steps 50000</code></p>
+<p style="color:#038aa1;">Set <code>total_timesteps</code> to 50,000 this time. Run it in the terminal with <code>python ppo.py --train --steps 50000</code></p>
 <p style="color:#038aa1;">$\implies$ What are the main differences between the untrained and trained PPO policies?</p>
 </div>
 </div>
