@@ -7493,7 +7493,9 @@ In this tutorial notebook we will implement all the basic components of a <b>Met
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 style="color: #b51f2a">Getting started</h2>
-<h3 id="Using-Conda">Using Conda<a class="anchor-link" href="#Using-Conda">¶</a></h3><div class="highlight"><pre><span></span>conda<span class="w"> </span>env<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>environment.yml
+<p><em>Note</em>: Installing the required packages would require about 1 GB of disk space.</p>
+<h3 id="Using-Conda">Using Conda<a class="anchor-link" href="#Using-Conda">¶</a></h3><p>If you don't have conda installed already, you can install the <code>miniconda</code> as <a href="https://docs.conda.io/projects/miniconda/en/latest/miniconda-install.html">described here</a>.</p>
+<div class="highlight"><pre><span></span>conda<span class="w"> </span>env<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>environment.yml
 </pre></div>
 <p>This should create an environment named <code>rl-tutorial</code> and install the necessary packages inside.</p>
 <p>Afterwards, activate the environment using</p>
@@ -7512,11 +7514,11 @@ In this tutorial notebook we will implement all the basic components of a <b>Met
 <h2 style="color: #b51f2a">Getting started</h2>
 <h3 id="Using-venv">Using venv<a class="anchor-link" href="#Using-venv">¶</a></h3><p><em>If you don't have conda installed:</em></p>
 <p>Alternatively, you can create the virtual env with</p>
-<div class="highlight"><pre><span></span>python<span class="w"> </span>venv<span class="w"> </span>-n<span class="w"> </span>rl-tutlrial
+<div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>-n<span class="w"> </span>rl-tutorial
 </pre></div>
 <p>and activate the env with <code>$ source &lt;venv&gt;/bin/activate</code> (bash) or <code>C:&gt; &lt;venv&gt;/Scripts/activate.bat</code> (Windows)</p>
 <p>Then, install the packages with <code>pip</code> within the activated environment</p>
-<div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip3<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+<div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip3<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
 </pre></div>
 <p>Afterwards, you should be able to run the provided scripts.</p>
 </div>
