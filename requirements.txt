@@ -1,0 +1,12 @@
+cpymad
+gymnasium >=0.29
+matplotlib
+numpy
+pandas
+pyyaml
+seaborn
+scipy
+stable_baselines3
+tensorboard
+torch>=2.1.0
+tqdm

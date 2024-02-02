@@ -1,0 +1,4 @@
+!awake/pretrained_policy.th
+!awake/config_fixed.json
+awake/*
+logs/

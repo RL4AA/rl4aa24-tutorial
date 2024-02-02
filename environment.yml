@@ -1,0 +1,21 @@
+name: rl-tutorial
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+      - cpymad==1.15.0
+      - gpytorch==1.11
+      - gymnasium==0.29.1
+      - matplotlib==3.8.2
+      - notebook==7.0.7
+      - numpy==1.26.3
+      - pandas==2.2.0
+      - pyyaml==6.0.1
+      - scipy==1.12.0
+      - seaborn==0.13.2
+      - stable-baselines3==2.2.1
+      - tensorboard==2.15.1
+      - torch==2.1.2
+      - tqdm==4.66.1

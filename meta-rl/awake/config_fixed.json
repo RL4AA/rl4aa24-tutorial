@@ -1,0 +1,35 @@
+{
+  "env-name": "awake",
+  "env-kwargs": {
+    "train": true,
+    "max_time": 100
+  },
+  "gamma": 1.0,
+  "gae-lambda": 0.99,
+  "first-order": true,
+  "hidden-sizes": [
+    64,
+    64
+  ],
+  "nonlinearity": "tanh",
+  "fast-batch-size": 16,
+  "num-steps": 4,
+  "fast-lr": 0.01,
+  "num-batches": 500,
+  "meta-batch-size": 8,
+  "max-kl": 0.001,
+  "cg-iters": 80,
+  "cg-damping": 1e-05,
+  "ls-max-steps": 100,
+  "ls-backtrack-ratio": 0.6,
+  "experiment_folder": "awake/tutorial",
+  "config": "configs/awake.yaml",
+  "output_folder": "awake",
+  "experiment_name": "tutorial",
+  "experiment_type": "train",
+  "seed": null,
+  "num_workers": 8,
+  "use_cuda": false,
+  "save_progress_interval": 1,
+  "device": "cpu"
+}

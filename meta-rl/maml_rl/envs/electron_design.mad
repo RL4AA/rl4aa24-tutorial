@@ -1,0 +1,126 @@
+!********************************************
+! TT43-TT41 (AWAKE e-line) model
+!
+! F.M. Velotti, C. Bracco
+! MADX version MAD-X 5.04.01 
+!********************************************
+
+title, 'AWAKE e-line';
+
+ option, echo;
+ option, RBARC=FALSE;
+
+
+!system, "ln -fns /opt/vkain/PycharmProjects/awakett43/2018 tt43_repo";
+
+!*********************************************
+! Import sequence, elements and strengths
+! N.B. FINT values calulated empirically from
+! beam-based measurements
+!*********************************************
+
+call, file = "tt43_repo/elements/electron_elements.ele";
+call, file = "tt43_repo/sequence/electron_sequence.seq";
+call, file = "tt43_repo/strength/electron_strength.str";
+
+call, file = "tt43_repo/beams/electron_beam.beamx";
+
+fint_h_var = 0.25;
+fint_v_var = 0.09;
+!***********************************************
+! Select strengths for needed optics
+!***********************************************
+
+//Focus at BTV50
+//kqf430205 := -7.74315   ;
+//kqd412344  := -5.08493  ;  
+//kqf412346   :=21.0534; 
+//kqd412347  := -25.2612 ;
+
+
+//Focus at BTV53
+//kqf430205 := -7.83841  ;
+//kqd412344  :=    - 3.71018;  
+//kqf412346   :=   18.396; 
+//kqd412347  :=  -16.3205;
+
+
+//Focus at BTV54
+//kqf430205 := -7.70116  ;
+//kqd412344  :=   -3.90342 ;  
+//kqf412346   :=   17.9845; 
+//kqd412347  :=  -15.1748;
+
+//Focus at Iris +1 m
+//kqf430205 := -7.64757  ;
+//kqd412344  :=   -5.91917 ;  
+//kqf412346   :=  17.6078; 
+//kqd412347  :=  -13.3947;
+
+//Focus at Iris +2 m
+//kqf430205 := -7.69869  ;
+//kqd412344  :=   -6.32961;  
+//kqf412346   :=  17.3987 ; 
+//kqd412347  :=  -12.7635;
+
+
+//Focus at Iris +3 m
+//kqf430205 := -7.6056  ;
+//kqd412344  :=  -6.02714;  
+//kqf412346   :=   17.1487; 
+//kqd412347  :=  -12.5029;
+
+//Focus at Iris +4 m
+//kqf430205 := -7.75767;
+//kqd412344  := -3.12061;  
+//kqf412346   := 16.2752; 
+//kqd412347  := -12.1149;
+
+//Focus at Iris +5 m
+//kqf430205 := -7.61516;
+//kqd412344  := -4.42116;
+//kqf412346   := 16.4406;
+//kqd412347  := -11.8455;
+
+
+!***************************************
+! Default optics
+!***************************************
+
+//Focus at Iris
+kqf430205 :=  -7.92377;
+kqd412344  := -1.07907;
+kqf412346  :=  16.7789;
+kqd412347  := -14.0290;
+
+
+use, sequence= TT43;
+
+set, format="15.9f";
+
+! Normalised emittance about 7 um in both planes
+emittx:=1.93e-7;
+emitty:=1.93e-7;
+
+! RMS momentum spread (estimated from measurements)
+dpp = 8e-3;
+
+!Spot Size [m]
+sigma_x := sqrt((table(twiss, betx)*emittx) + ((table(twiss,dx))*dpp)^2);
+sigma_y := sqrt((table(twiss, bety)*emitty) + ((table(twiss,dy))*dpp)^2);
+
+
+! Measured ini conditions: beta_x = 3.1 m, alfa_x = 0.8, beta_y = 3.5 m, alfa_y = 0.8
+
+Select,flag=twiss, clear;
+Select,flag=twiss,column=name,keyword,s,l,sigma_x,sigma_y,betx,bety,dx, dpx, dy, dpy, alfx,alfy,x,y,k1l,mux,muy;
+//Select,flag=twiss,column=name,keyword,s,l,aper_1,aper_2;
+TWISS, file="tt43_repo/output/electron_tt43.out",
+
+! Ideal initial conditions
+initbeta0:beta0,DELTAP=0.0,BETX=5,ALFX=0,DX=0,DPX=0,
+BETY=5,ALFY=0,DY=0.0,DPY=0.0,
+           x=0,px=0,y=0,py=0;
+
+!stop;
+
