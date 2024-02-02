@@ -1,6 +1,7 @@
 cpymad
 gymnasium >=0.29
 matplotlib
+notebook
 numpy
 pandas
 pyyaml
