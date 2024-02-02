@@ -52,7 +52,7 @@ _If you don't have conda installed:_
 Alternatively, you can create the virtual env with
 
 ```bash
-python venv -n rl-tutlrial
+python3 -m venv -n rl-tutorial
 ```
 
 and activate the env with `$ source <venv>/bin/activate` (bash) or `C:> <venv>/Scripts/activate.bat` (Windows)
@@ -60,7 +60,7 @@ and activate the env with `$ source <venv>/bin/activate` (bash) or `C:> <venv>/S
 Then, install the packages with `pip` within the activated environment
 
 ```bash
-python -m pip3 install -r requirements.txt
+python3 -m pip3 install -r requirements.txt
 ```
 
 Afterwards, you should be able to run the provided scripts.
@@ -75,7 +75,7 @@ It then becomes a classical RL tuning task and can be solved using PPO.
 With the virtual environment activated, run
 
 ```bash
-python ppo.py --train
+python3 ppo.py --train
 ```
 
 This will train a policy to solve the AWAKE problem using the PPO algorithm from stable-baselines3.
@@ -88,7 +88,7 @@ The PPO agent was trained only on _task_0_.
 We can load the trained policy and evaluate it on other tasks, for example by running the following command
 
 ```bash
-python ppo.py --test --task-id 2
+python3 ppo.py --test --task-id 2
 ```
 
 ### Adaptation from the random initial policy
@@ -100,7 +100,7 @@ If we run only the inner-loop on a single task.
 This is done by calling
 
 ```bash
-python test.py
+python3 test.py
 ```
 
 In the progress plots, you will see the agent is slowly improving.
@@ -110,7 +110,7 @@ In the progress plots, you will see the agent is slowly improving.
 Now, let's run the meta-training.
 
 ```bash
-python train.py
+python3 train.py
 ```
 
 During the training, you can use the `run_update_training.py` to show some live updates of the training process.
@@ -120,7 +120,7 @@ After the meta-training, the meta-policy will be placed in a setting where it's 
 We can verify this by running the `test.py` again, this time with the pre-trained meta-policy
 
 ```bash
-python test.py --use-meta-policy
+python3 test.py --use-meta-policy
 ```
 
 Now you should see that the agents behaves quite well initially, and still gets better after several adaption steps.
@@ -128,7 +128,7 @@ Now you should see that the agents behaves quite well initially, and still gets 
 _Note_: To load the pre-trained meta-policy we provided, you can run it with
 
 ```bash
-python test.py --use-meta-policy --num-batches 500 --policy awake/pretrained_policy.th --experiment-name test_me --experiment-type pretrained --task-ids 0 1 2 3 4 --plot-interval 100
+python3 test.py --use-meta-policy --num-batches 500 --policy awake/pretrained_policy.th --experiment-name test_me --experiment-type pretrained --task-ids 0 1 2 3 4 --plot-interval 100
 ```
 
 It will load the policy from `awake/pretrained_policy.th` and adapt on the 5 verification tasks `[0,1,2,3,4]` for 500 batches, and save the results and progress to `awake/test_me/pretrained`.
@@ -136,7 +136,7 @@ It will load the policy from `awake/pretrained_policy.th` and adapt on the 5 ver
 Then you can run the following command to view the progress of the adaptation.
 
 ```bash
-python read_out_train.py --experiment-name test_me --experiment-type pretrained
+python3 read_out_train.py --experiment-name test_me --experiment-type pretrained
 ```
 
 ## Repository Structure
