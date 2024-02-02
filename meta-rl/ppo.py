@@ -3,10 +3,9 @@ import pickle
 
 import numpy as np
 import torch
-from stable_baselines3 import PPO
-
 from maml_rl.envs.awake_steering_simulated import AwakeSteering as awake_env
 from policy_test import verify_external_policy_on_specific_env
+from stable_baselines3 import PPO
 
 
 def main(args):
@@ -38,14 +37,17 @@ def main(args):
         model = PPO(
             "MlpPolicy", env, verbose=1, seed=seed, tensorboard_log="./logs/ppo/"
         )
-        model.learn(total_timesteps=args.steps)
+        model.set_random_seed(seed)
+        if args.steps > model.n_steps:
+            model.learn(total_timesteps=args.steps)
         model.save(args.output_file)
     else:
         print("Loading model...")
         model = PPO.load(args.output_file)
 
     def get_deterministic_policy(x):
-        return model.predict(x, deterministic=True)[0]
+        return model.predict(x)[0]
+        # return model.action_space.sample()
 
     policy = get_deterministic_policy
 
