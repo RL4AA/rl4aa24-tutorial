@@ -27,6 +27,7 @@ jobs:
                 mkdir temp
                 cp -r img/ temp/img/
                 jupyter nbconvert tutorial.ipynb --to slides --reveal-prefix reveal.js --output temp/index.html
+                ls -R temp
             
             - name: Push files to website branch
               uses: ad-m/github-push-action@master
@@ -34,5 +35,6 @@ jobs:
                 github_token: ${{ secrets.GITHUB_TOKEN }}
                 branch: 'website'
                 directory: 'temp'
+                force: true
                 
 
