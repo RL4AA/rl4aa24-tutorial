@@ -1,0 +1,42 @@
+name: publish_webiste
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+    push_to_branch:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+              with:
+                fetch-depth: 0
+            
+            - name: Setup Python
+              uses: actions/setup-python@v2
+              with:
+                python-version: '3.x'
+            
+            - name: Install Jupyter
+              run: pip install notebook
+
+            - name: Convert notebook to HTML
+              run: jupyter nbconvert tutorial.ipynb --to slides --reveal-prefix reveal.js
+            
+
+            - name: Add files
+              run: |
+                mkdir temp
+                cp -r img/ temp/img/
+                cp tutorial.slides.html temp/index.html
+            
+            - name: Push files to website branch
+              uses: ad-m/github-push-action@master
+              with:
+                github_token: ${{ secrets.GITHUB_TOKEN }}
+                branch: 'website'
+                directory: 'temp'
+                
+
