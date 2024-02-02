@@ -7985,7 +7985,7 @@ $\phi_0 \rightarrow \phi_1$
 <li>The policy $\varphi_0^0$ starts as random and adapts for 500 steps (and show the progress every 50 steps).</li>
 </ul>
 <p>Run the following code to train the task policy $\varphi_0^0$ for 500 steps:</p>
-<p><code>python test.py --experiment-name tutorial --experiment-type adapt_from_scratch --num-batches=500 --plot-interval=50 --task-ids 0</code></p>
+<p><code>python test.py --experiment-name tutorial --experiment-type adapt_from_scratch --num-batches 500 --plot-interval 50 --task-ids 0</code></p>
 <p>Once it has run, you can look at the adaptation progress by running:</p>
 <p><code>python read_out_train.py --experiment-name tutorial --experiment-type adapt_from_scratch</code></p>
 <p>You can run now several tasks.</p>
@@ -8036,7 +8036,7 @@ Therefore we have provided a pre-trained policy which can be used for evaluation
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h3 style="color: #b51f2a">Evaluation of the trained meta-policy 💻</h3>
 <p>We will now use a pre-trained policy located in <code>awake/pretrained_policy.th</code> and evalulate it against a certain number of fixed tasks.</p>
-<p><code>python test.py --experiment-name tutorial --experiment-type test_meta --use-meta-policy --policy awake/pretrained_policy.th --num-batches=500 --plot-interval=50 --task-ids 0 1 2 3 4</code></p>
+<p><code>python test.py --experiment-name tutorial --experiment-type test_meta --use-meta-policy --policy awake/pretrained_policy.th --num-batches 500 --plot-interval 50 --task-ids 0 1 2 3 4</code></p>
 <ul>
 <li>use  <code>--task-ids 0 1 2 3 4</code> to run evaluation against all 5 tasks, or e.g. <code>--task-ids 0</code> to evaluate only for task 0.</li>
 <li>here we set the flag <code>--use-meta-policy</code> so that it uses the pre-trained policy.</li>
