@@ -9,9 +9,8 @@ from typing import List, Optional
 
 import matplotlib.pyplot as plt
 import numpy as np
-from sympy import root
-
 from maml_rl.utils.reinforcement_learning import get_returns
+from sympy import root
 
 # from maml_rl.utils.torch_utils import to_numpy
 
@@ -175,7 +174,7 @@ def plot_progress(
     ax.set_title(title)
     ax.set_xlabel("Batches")
     ax.set_ylabel("Returns")
-    ax.legend()
+    ax.legend(loc="lower right")
     ax.grid(True)
 
     if save_folder:
@@ -285,6 +284,8 @@ if __name__ == "__main__":
         returns_mean_valid,
         nr_total_interactions,
     ) = read_train_data(my_dir=progress_folder)
+    fig = plt.figure(figsize=(6, 4))
+    ax = fig.add_subplot(111)
     plot_progress(
         returns_train,
         returns_valid,
@@ -292,7 +293,9 @@ if __name__ == "__main__":
         returns_mean_valid,
         title=f"Statistics for exp: {args.experiment_type}, "
         + f"total {nr_total_interactions} steps",
+        ax=ax,
     )
+    ax.set_ylim(-120, 0)  # For tutorial purposes
 
     data_train_individual, data_valid_individual = read_train_data_individual(
         my_dir=progress_folder
