@@ -22,10 +22,6 @@ jobs:
             - name: Install Jupyter
               run: pip install notebook
 
-            - name: Convert notebook to HTML
-              run: 
-            
-
             - name: Export the notebook and Add files
               run: |
                 mkdir temp
