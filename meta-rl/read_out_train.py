@@ -9,8 +9,9 @@ from typing import List, Optional
 
 import matplotlib.pyplot as plt
 import numpy as np
-from maml_rl.utils.reinforcement_learning import get_returns
 from sympy import root
+
+from maml_rl.utils.reinforcement_learning import get_returns
 
 # from maml_rl.utils.torch_utils import to_numpy
 

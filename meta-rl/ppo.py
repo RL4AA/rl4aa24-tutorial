@@ -3,9 +3,10 @@ import pickle
 
 import numpy as np
 import torch
+from stable_baselines3 import PPO
+
 from maml_rl.envs.awake_steering_simulated import AwakeSteering as awake_env
 from policy_test import verify_external_policy_on_specific_env
-from stable_baselines3 import PPO
 
 
 def main(args):

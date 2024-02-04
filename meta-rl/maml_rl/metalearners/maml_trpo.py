@@ -5,12 +5,8 @@ from torch.nn.utils.convert_parameters import parameters_to_vector
 from maml_rl.metalearners.base import GradientBasedMetaLearner
 from maml_rl.utils.optimization import conjugate_gradient
 from maml_rl.utils.reinforcement_learning import reinforce_loss
-from maml_rl.utils.torch_utils import (
-    detach_distribution,
-    to_numpy,
-    vector_to_parameters,
-    weighted_mean,
-)
+from maml_rl.utils.torch_utils import (detach_distribution, to_numpy,
+                                       vector_to_parameters, weighted_mean)
 
 
 class MAMLTRPO(GradientBasedMetaLearner):
