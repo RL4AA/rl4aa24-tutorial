@@ -6,7 +6,7 @@ Homepage for RL4AA Collaboration: [https://rl4aa.github.io/](https://rl4aa.githu
 
 ## Theory slides for the tutorial
 
-- [Advanced concepts in RL](https://github.com/RL4AA/RL4AA23/blob/main/slides/Hirlaender_advanced_concepts.pdf), Simon Hirländer
+- [Concepts to overcome challenges in applying RL to accelerators](https://indico.scc.kit.edu/event/3746/sessions/3777/attachments/7180/11399/Tutorial_slides_RL4AA24_Simon_Hirlaender.pdf), Simon Hirländer
 
 ## Python tutorial: meta reinforcement learning implementation example
 
