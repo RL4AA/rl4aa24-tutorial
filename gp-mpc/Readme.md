@@ -7,7 +7,7 @@ Chenran Xu, Annika Eichler
 
 * Run the [main.py](main.py) script. This will start the training.
 * The [config.yaml](config%2Fconfig.yaml) contains all hyperparameters, which will be explaned during the tutorial.
-*[awake.py](awake.py)
+* We use a similar environment as the one in the Meta-RL part. Here is the file with environment definition [awake.py](awake.py)
 
 This was financed by IDA Lab.
 The codebase was derived and significantly modified from the original implementation available at
