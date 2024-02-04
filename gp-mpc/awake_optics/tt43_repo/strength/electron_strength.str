@@ -1,0 +1,79 @@
+
+!-------------------------------------------------------
+!  Strength Variables
+!-------------------------------------------------------
+
+!=======================================
+!Matched values for 16 MeV
+!=======================================
+
+scale = 0.0718/0.0708;
+
+kqd430031 :=      -5.0149662   * scale;
+kqf430034 :=       9.3716437   * scale;
+kqd430037 :=      -8.1253602   * scale;
+kqd430109 :=      -3.12832e+01 * scale;
+kqf430118 :=       1.94291e+01 * scale;
+kqf430311 :=       2.64975e+01 * scale;
+
+!=======================================
+
+kMBAWH430300 :=  -0.5670925 ;		!Angle horizontal bending 1 MBH2003
+kMBAWV =   -0.321465 ;		!Angle vertical   bending   MBV.1002 & MBV.2001
+kMBAWH412343 :=  -0.569608324504889 ;  !Angle horizontal bending 2 MBH2005
+mbh_tilt 	= -0.105103009315855 ;
+
+
+
+//————Strength Dipoles
+	MBAWV.430100 , ANGLE :=  kMBAWV, k0:=  kMBAWV / 0.1775,  TILT := pi/2 ;
+	MBAWV.430200 , ANGLE := -kMBAWV, k0:= -kMBAWV / 0.1775,  TILT := pi/2 ;
+
+	MBAWH.430300 , ANGLE :=    kMBAWH430300, k0:= kMBAWH430300 / 0.1775 ;
+	MBAWH.412343 , ANGLE :=    kMBAWH412343, k0:= kMBAWH412343 / 0.1775, tilt := mbh_tilt, e1 := var_e1, e2 := var_e2;
+
+//————Strength Quadrupoles
+	MQAWD.430031 , K1    :=  kQD430031 ;
+	MQAWF.430034 , K1    :=  kQF430034 ;
+	MQAWD.430037 , K1    :=  kQD430037 ;
+
+	MQAWD.430109 , K1    :=  kQD430109 ;
+	MQAWF.430118 , K1    :=  KQF430118  ;
+	MQAWD.430128 , K1    :=  kQD430109 ;
+
+	MQAWF.430205 , K1    :=  kQF430205;
+
+	MQAWF.430311 , K1    :=  kQF430311  ;
+
+	MQAWD.412344 , K1    :=  KQD412344 ;
+	MQAWF.412346 , K1    :=  KQF412346 ;
+	MQAWD.412347 , K1    :=  KQD412347  ;
+
+
+//————Strength Kickers
+        MCAWA.430029, vkick  := 0.00, 	hkick = 0;
+        MCAWA.430040, vkick  := 0.00, 	hkick = 0;
+        MCAWA.430104, vkick  := 0.00, 	hkick = 0;
+	MCAWA.430130, vkick  = 0, 	hkick = 0;
+	MCAWA.430204, vkick  = 0, 	hkick = 0;
+	MCAWA.430309, vkick := kCv430309, hkick = 0;
+
+	MCAWA.412344, vkick := kCv412344, hkick := kCh412344;
+	
+        MCAWA.412345, vkick := kCv412345, hkick := kCh412345;
+//        kCh412347:=-1.616e-3 ;
+//        kCh412347:=3.221e-3;
+//        kCv412347:=-0.989e-3 ;
+//       kCv412347:=1.474e-3;
+        MCAWA.412347, vkick := kCv412347, hkick := kCh412347;
+	MCAWA.412349, vkick := kCv412349, hkick := kCh412349;
+	MCAWA.412353, vkick := kCv412353, hkick := kCh412353;
+
+
+
+
+
+
+
+
+	

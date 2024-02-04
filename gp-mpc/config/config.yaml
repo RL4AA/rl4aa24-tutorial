@@ -1,0 +1,65 @@
+# General Parameters
+num_steps_env: 100
+random_actions_init: 20
+verbose: false
+
+# Gaussian Process Initialization Parameters
+gp_init:
+  noise_covar.noise: [1.0e-15, 1.0e-15, 1.0e-15, 1.0e-15, 1.0e-15, 1.0e-15, 1.0e-15, 1.0e-15, 1.0e-15, 1.0e-15]
+  base_kernel.lengthscale: [2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5]
+  outputscale: [0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15]
+
+# Gaussian Process Constraints
+gp_constraints:
+  min_std_noise: 1.0e-20
+  max_std_noise: 2.5e-2
+  min_outputscale: 1.0e-20
+  max_outputscale: 100.0
+  min_lengthscale: 1.0e-10
+  max_lengthscale: 1000.0
+  min_lengthscale_time: 0.01
+  max_lengthscale_time: 5.0
+
+# Controller Configuration
+controller:
+  target_state_norm: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
+  weight_state: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 5.0]
+  weight_state_terminal: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 5.0]
+  target_action_norm: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
+  weight_action: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  obs_var_norm: [1.0e-15, 1.0e-15, 1.0e-15, 1.0e-15, 1.0e-15, 1.0e-15, 1.0e-15, 1.0e-15, 1.0e-15, 1.0e-15]
+  len_horizon: 10
+  exploration_factor: 0.0
+  limit_action_change: false
+  max_change_action_norm: [0.5]
+  num_repeat_actions: 1
+  # avoid negative cost
+  clip_lower_bound_cost_to_0: false
+
+
+# Training Configuration of GP hyperparameters
+train:
+  lr_train: 1.0e-3
+  iter_train: 20
+  training_frequency: 1
+  clip_grad_value: 1.0e-4
+  print_train: false
+  step_print_train: 50
+
+# Action Optimizer Configuration
+actions_optimizer:
+  disp: null
+  maxcor: 15
+  ftol: 1.0e-10
+  gtol: 1.0e-15
+  eps: 1.0e-3
+  maxfun: 15
+  maxiter: 15
+  iprint: -1
+  maxls: 40
+  finite_diff_rel_step: null
+
+# Memory Configuration for reducing the amount of data in the buffer
+memory:
+  min_error_prediction_state_for_memory: [1.0e-20, 1.0e-20, 1.0e-20, 1.0e-20, 1.0e-20, 1.0e-20, 1.0e-20, 1.0e-20, 1.0e-20, 1.0e-20]
+  min_prediction_state_std_for_memory: [1.0e-20, 1.0e-20, 1.0e-20, 1.0e-20, 1.0e-20, 1.0e-20, 1.0e-20, 1.0e-20, 1.0e-20, 1.0e-20]

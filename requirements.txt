@@ -1,4 +1,5 @@
 cpymad
+gpytorch
 gymnasium >=0.29
 matplotlib
 notebook
