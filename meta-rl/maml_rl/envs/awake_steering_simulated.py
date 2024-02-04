@@ -14,8 +14,13 @@ from cpymad.madx import Madx
 from gymnasium import Wrapper, spaces
 from gymnasium.core import WrapperObsType
 
-from maml_rl.envs.helpers import (Awake_Benchmarking_Wrapper, MamlHelpers,
-                                  Plane, plot_optimal_policy, plot_results)
+from maml_rl.envs.helpers import (
+    Awake_Benchmarking_Wrapper,
+    MamlHelpers,
+    Plane,
+    plot_optimal_policy,
+    plot_results,
+)
 
 # Standard environment for the AWAKE environment,
 # adjusted, so it can be used for the MAML therefore containing
