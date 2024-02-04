@@ -7589,8 +7589,20 @@ In this tutorial notebook we will implement all the basic components of a <b>Met
 <h3 style="color: #b51f2a">Actions</h3>
 The actuators are the strengths of 10 corrector magnets that can steer the beam.
 They are normalized to [-1, 1]. 
-In this tutorial, we apply the action by adding a delta change $\Delta a$ to the current magnet strengths .
+In this tutorial, we apply the action by adding a delta change $\Delta a$ to the current magnet strengths.
 
+
+</div>
+</div>
+</div>
+</div></section></section><section><section>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 style="color: #b51f2a">Formulating the RL problem</h2>
 <h3 style="color: #b51f2a">States/Observations</h3>
 The observations are the readings of ten beam position monitors (BPMs), which read the position of the beam at a particular point in the beamline. The states are also normalized to [-1,1], corresponding to $\pm$ 100 mm in the real accelerator.
 
@@ -7612,9 +7624,9 @@ The observations are the readings of ten beam position monitors (BPMs), which re
 The reward is the negative RMS value of the distance to the target trajectory. 
 
 <p>$$
-r(x) = - \sqrt{ \frac{1}{10} \sum_{i=1}^{10} (x_{i} - x^{\text{target}}_{i})^2},
+r(x) = - \sqrt{ \frac{1}{10} \sum_{i=1}^{10} \Delta x_{i}^2} \,, \ \ \  \Delta x_{i} = x_{i} - x^{\text{target}}_{i}
 $$</p>
-<p>where $x^{\text{target}}=\vec{0}$ for a centered orbit.</p>
+<p>where $x^{\text{target}}=\vec{0}$ for a centered trajectory.</p>
 <center>
 <img alt="No description has been provided for this image" src="img/steering_problem.png" style="width:70%; margin:auto;"/>
 </center>
@@ -7629,19 +7641,15 @@ $$</p>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 style="color: #b51f2a">Formulating the RL problem</h2>
-<h3 style="color: #b51f2a">Convergence condition</h3>
-If a threshold RMS (-10 mm in our case, 0.1 in normalized scale) is surpassed,
-the episode ends successfully. 
-
-<h3 style="color: #b51f2a">Termination (safety) condition</h3>
-If the beam hits the wall (any state ≤ -1 or ≥ 1 in normalized scale, 10 cm), the episode is terminated unsuccessfully. 
-
+<h3 style="color: #b51f2a">Successful termination condition</h3>
+<p>If a threshold RMS (-10 mm in our case, 0.1 in normalized scale) is surpassed,
+the episode ends successfully.  We cannot measure <em>exactly</em> 0 because of the resolution of the BPMs.</p>
+<h3 style="color: #b51f2a">Unsucessful termination (safety) condition</h3>
+<p>If the beam hits the wall (any state ≤ -1 or ≥ 1 in normalized scale, 10 cm), the episode is terminated unsuccessfully. In this case, the agent receives a large negative reward (all BPMs afterwards are set to the largest value) to discourage the agent.</p>
 <h3 style="color: #b51f2a">Episode initialization</h3>
-All episodes are initialised such that the RMS of the distance to the target trajectory is large. This ensures that the task is not too easy and relatively close to the boundaries to probe the safety settings.
-
+<p>All episodes are initialised such that the RMS of the distance to the target trajectory is large. This ensures that the task is not too easy and relatively close to the boundaries to probe the safety settings.</p>
 <h3 style="color: #b51f2a">Agents</h3>
-In this tutorial we will use:
-
+<p>In this tutorial we will use:</p>
 <ul>
 <li>PPO (Proximal Policy Optimization)</li>
 <li>MAML (Model Agnostic Meta Learning)</li>
@@ -7660,11 +7668,13 @@ In this tutorial we will use:
 <h3 style="color: #b51f2a">Environments/Tasks</h3>
 <p>
 <center>
-<font size="8"> 
-    1 task / 1 environment =  1 set of fixed quadrupole strengths
+<font size="4"> 
+    1 task or 1 environment =  1 set of fixed quadrupole strengths = 1 MDP
     </font>
 </center>
 </p>
+<img alt="No description has been provided for this image" src="img/learn_to_learn.png" style="float: left; width: 30%; margin-right: 8%; margin-bottom: 0.5em;"/>
+<p> <br/></p>
 <p>In this tutorial we will use a variety of environments or tasks:</p>
 <ul>
 <li><p style="color:blue">Fixed tasks for evaluation ❗</p>
@@ -7673,9 +7683,7 @@ In this tutorial we will use:
 </li>
 </ul>
 <p>We generate them from the original, nominal optics, adding a random scaling factor to the quadrupole strengths.</p>
-<center>
-<img alt="No description has been provided for this image" src="img/awake_lattice.png" style="width:70%; margin:auto;"/>
-</center>
+<img alt="No description has been provided for this image" src="img/mdp_distribution.png" style="width: 30%; margin:auto;"/>
 </div>
 </div>
 </div>
@@ -7695,8 +7703,8 @@ In this tutorial we will use:
 \end{align}</p>
 <br/>
 <center>
-<img alt="No description has been provided for this image" src="img/response_matrix_tasks.png" style="width:60%; margin:auto;"/>
-</center>
+<img alt="No description has been provided for this image" src="img/response_matrix_tasks.png" style="width:60%; margin:auto;">
+</img></center>
 </div>
 </div>
 </div>
@@ -7714,11 +7722,11 @@ In this tutorial we will use:
 \begin{align}
     \Delta a &amp;= \mathbf{R}^{-1}\Delta s
 \end{align}</p>
-<p>$\implies$ Actions from <strong>RL policy</strong>:
+<p>$\implies$ Actions from deep <strong>RL policy</strong>:
 With the policy we get the actions:</p>
 <center>
-<img alt="No description has been provided for this image" src="img/policy.png" style="width:20%; margin:auto;"/>
-</center>
+<img alt="No description has been provided for this image" src="img/policy.png" style="width:20%; margin:auto;">
+</img></center>
 </div>
 </div>
 </div>
@@ -7756,7 +7764,7 @@ The policy is fixed (no weight updates) and only forwards passes are performed.
 </ul>
 <p>Side note:</p>
 <ul>
-<li>The benchmark policy will not immediately find the settings for the target trajectory, because the actions are scaled down for safety reasons so that the maximum step is within $[-1,1]$ in the normalized space.</li>
+<li>The benchmark policy will not immediately find the settings for the target trajectory, because the actions are limited so that the maximum step is within $[-1,1]$ in the normalized space.</li>
 <li>We can then compare the metrics of both policies.<center>
 <img alt="No description has been provided for this image" src="img/steering_problem.png" style="width:50%; margin:auto;">
 </img></center>
@@ -7845,7 +7853,7 @@ This parameter specifies the total number of timesteps (or steps) that the train
 <p style="color:#038aa1;">$\implies$ What is the difference in episode length between the benchmark policy and PPO? </p>
 <p style="color:#038aa1;">$\implies$ Look at the cumulative episode length, which policy takes longer?</p>
 <p style="color:#038aa1;">$\implies$ Compare both cumulative rewards, which reward is higher and why?</p>
-<p style="color:#038aa1;">$\implies$ Look at the final reward (-10*RMS(BPM readings)) and consider the convergence (in red) and termination conditions mentioned before. What can you say about how the episode was ended?</p>
+<p style="color:#038aa1;">$\implies$ Look at the final reward (-10*RMS(BPM readings)) and consider the sucessful (in red) and unsuccessful termination conditions mentioned before. What can you say about how the episode was ended?</p>
 </div>
 </div>
 </div>
@@ -7933,12 +7941,10 @@ This parameter specifies the total number of timesteps (or steps) that the train
 <li>We have a <b>meta policy</b> $\phi(\theta)$, where $\theta$ are the weights of a neural network. The meta policy starts untrained $\phi_0$.</li>
 </ul>
 <h3 style="color: #b51f2a">Step 1: outer loop</h3>
-We randomly sample a number of tasks $i$ (in our case $i\in \{1,\dots,8\}$ different lattices, called <code>meta-batch-size</code> in the code) from a task distribution, each one with its particular initial <b>task policy</b> $\varphi_{0}^i=\phi_0$.
-
+<p>We randomly sample a number of tasks $i$ (in our case $i\in \{1,\dots,8\}$ different lattices, called <code>meta-batch-size</code> in the code) from a task distribution, each one with its particular initial <b>task policy</b> $\varphi_{0}^i=\phi_0$.</p>
 <h3 style="color: #b51f2a">Step 2: inner loop (adaptation)</h3>
-For each task, we gather experience for several episodes, store the experience, and use it to perform gradient descent and update the weights of each task policy $\varphi_{0}^i \rightarrow \varphi_{k}^i$ for $k$ gradient descent steps.
-
-
+<p>For each task, we gather experience for several episodes, store the experience, and use it to perform gradient descent and update the weights of each task policy $\varphi_{0}^i \rightarrow \varphi_{1}^i$</p>
+<p>This is repeated for $k$ gradient descent steps to generate $\varphi_{k}^i$.</p>
 </div>
 </div>
 </div>
@@ -7951,7 +7957,7 @@ For each task, we gather experience for several episodes, store the experience, 
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 style="color: #b51f2a">Optimization-based meta RL in this tutorial</h2>
 <h3 style="color: #b51f2a">Step 3: outer loop (meta training)</h3>
-<p>We sum the losses calculated for each <strong>task policy</strong> and perform gradient descent on the <strong>meta policy</strong>
+<p>We generate episodes with the adapted <strong>task policies</strong> $\varphi_{k}^i$. We sum the losses calculated for each task $\tau_{i}$ and perform gradient descent on the <strong>meta policy</strong>
 $\phi_0 \rightarrow \phi_1$</p>
 <center>
 <img alt="No description has been provided for this image" src="img/meta_gradient.png" style="width:40%; margin:auto;"/>
@@ -7972,10 +7978,10 @@ $\phi_0 \rightarrow \phi_1$</p>
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 style="color: #b51f2a">Meta RL: summary</h2>
 <p>We start with a random meta policy, and we initialize the task policies with it: $\phi_0 = \varphi_{0}^i$</p>
-<div class="highlight"><pre><span></span><span class="n">meta_step</span> <span class="mi">0</span><span class="p">:</span>
+<div class="highlight"><pre><span></span><span class="mi">1</span> <span class="n">meta_step</span><span class="p">:</span>  <span class="c1"># Outer loop</span>
    <span class="n">sample</span> <span class="mi">8</span> <span class="n">tasks</span>
-   <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">num_steps</span><span class="p">:</span>
+   <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">fast_step</span> <span class="ow">in</span> <span class="n">num_steps</span><span class="p">:</span>  <span class="c1"># Inner loop</span>
             <span class="k">for</span> <span class="n">fast_batch</span> <span class="ow">in</span> <span class="n">fast_batch_size</span><span class="p">:</span>
                 <span class="n">rollout</span> <span class="mi">1</span> <span class="n">episode</span><span class="p">:</span>
                     <span class="n">reset</span> <span class="n">corrector_strength</span>
@@ -8106,7 +8112,7 @@ Therefore we have provided a pre-trained policy which can be used for evaluation
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 style="color: #b51f2a">We can observe that the meta policy can solve the problem for different tasks (i.e. lattices)!</h3>
+<h3 style="color: #b51f2a">We can observe that the pre-trained meta policy can solve the problem for different tasks (i.e. lattices) within a few adaptation steps!</h3>
 <br/>
 <p><img alt="No description has been provided for this image" src="img/meta_policy.png" style="width:100%; margin:auto;"/></p>
 </div>
