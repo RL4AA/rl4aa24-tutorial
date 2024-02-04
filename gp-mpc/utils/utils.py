@@ -276,6 +276,7 @@ def close_run(ctrl_obj, env):
     env.__exit__()
     ctrl_obj.check_and_close_processes()
 
+
 class LivePlotSequential:
     def __init__(
         self,
@@ -316,7 +317,10 @@ class LivePlotSequential:
         self.num_points_show = 0
         self.lines_states = [
             self.axes[0].plot(
-                [], [], label="state" + str(state_idx), color=colors_map[state_idx]#cmap.colors[2 * state_idx]
+                [],
+                [],
+                label="state" + str(state_idx),
+                color=colors_map[state_idx],  # cmap.colors[2 * state_idx]
             )
             for state_idx in range(obs_space.shape[0])
         ]
@@ -494,15 +498,14 @@ class LivePlotSequential:
                 self.mean_costs_pred[self.num_points_show] = self.mean_costs_pred[
                     self.num_points_show - 1
                 ]
-                self.mean_costs_std_pred[
-                    self.num_points_show
-                ] = self.mean_costs_std_pred[self.num_points_show - 1]
+                self.mean_costs_std_pred[self.num_points_show] = (
+                    self.mean_costs_std_pred[self.num_points_show - 1]
+                )
 
         self.line_mean_costs_pred[0].set_data(
             idxs, self.mean_costs_pred[: (self.num_points_show + 1)]
         )
         self.axes[2].set_ylim(
-
             np.min(
                 [
                     np.min(self.mean_costs_pred[: (self.num_points_show + 1)]),
@@ -510,7 +513,7 @@ class LivePlotSequential:
                 ]
             )
             * 1.1,
-            0.5
+            0.5,
         )
         self.axes[2].fill_between(
             idxs,

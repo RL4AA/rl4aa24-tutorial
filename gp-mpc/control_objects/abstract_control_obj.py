@@ -2,9 +2,7 @@ import torch
 
 
 class BaseControllerObject:
-    def __init__(
-        self, observation_space, action_space, n_points_init_memory=1000
-    ):
+    def __init__(self, observation_space, action_space, n_points_init_memory=1000):
         self.action_space = action_space
         self.obs_space = observation_space
         self.num_states = self.obs_space.shape[0]

@@ -29,9 +29,7 @@ def main():
     num_repeat_actions = params_controller_dict["controller"]["num_repeat_actions"]
     random_actions_init = params_controller_dict["random_actions_init"]
 
-    env = SmartEpisodeTrackerWithPlottingWrapper(
-        e_trajectory_simENV()
-    )
+    env = SmartEpisodeTrackerWithPlottingWrapper(e_trajectory_simENV())
     live_plot_obj, ctrl_obj = init_graphics_and_controller(
         env, num_steps, params_controller_dict
     )
