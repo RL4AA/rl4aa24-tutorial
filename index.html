@@ -7443,7 +7443,7 @@ main {
 <h1 style="text-align: center; vertical-align: middle;">Meta Reinforcement Learning for steering tasks</h1>
 <h2 style="text-align: center; vertical-align: middle;">Use case: AWAKE beamline at CERN</h2>
 <h3 style="text-align: center; vertical-align: middle;">Implementation example for the RL4AA'24 workshop</h3>
-<p style="text-align: center">Simon Hirländer, Jan Kaiser, Chenran Xu, Andrea Santamaria Garcia</p>
+<p style="text-align: center">Simon Hirlaender, Jan Kaiser, Chenran Xu, Andrea Santamaria Garcia</p>
 </div>
 </div>
 </div>
@@ -7976,17 +7976,17 @@ $\phi_0 \rightarrow \phi_1$</p>
    <span class="n">sample</span> <span class="mi">8</span> <span class="n">tasks</span>
    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">num_steps</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">fb</span> <span class="ow">in</span> <span class="n">fast_batch_size</span><span class="p">:</span>
-                <span class="n">perform</span> <span class="mi">1</span> <span class="n">episode</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">fast_batch</span> <span class="ow">in</span> <span class="n">fast_batch_size</span><span class="p">:</span>
+                <span class="n">rollout</span> <span class="mi">1</span> <span class="n">episode</span><span class="p">:</span>
                     <span class="n">reset</span> <span class="n">corrector_strength</span>
                     <span class="k">while</span> <span class="ow">not</span> <span class="n">stopped</span><span class="p">:</span>
                         <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
 </pre></div>
 <p>We have gathered experience and trained 8 task policies:
 $$
-\varphi_{0}^1 \rightarrow \varphi_{k}^1 \\
-\vdots \\
-\varphi_{0}^8 \rightarrow \varphi_{k}^8 \\
+\varphi_{0}^1 \rightarrow \varphi_{k}^1$$
+$$\vdots$$
+$$\varphi_{0}^8 \rightarrow \varphi_{k}^8
 $$</p>
 <p>The losses from the task policies are summed, and gradient descent is applied to update the meta policy $\phi_0 \rightarrow \phi_1$</p>
 </div>
@@ -8170,7 +8170,7 @@ Therefore we have provided a pre-trained policy which can be used for evaluation
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 style="color: #b51f2a">Further Resources</h2>
-<h3 id="Papers">Papers<a class="anchor-link" href="#Papers">¶</a></h3><ul>
+<h3 id="Papers-about-RL-in-Particle-Accelerators-and-Large-Scale-Facilities">Papers about RL in Particle Accelerators and Large-Scale Facilities<a class="anchor-link" href="#Papers-about-RL-in-Particle-Accelerators-and-Large-Scale-Facilities">¶</a></h3><ul>
 <li><a href="https://proceedings.mlr.press/v162/kaiser22a.html">Learning-based optimisation of particle accelerators under partial observability without real-world training</a> - Tuning of electron beam properties on a diagnostic screen using RL.</li>
 <li><a href="https://journals.aps.org/prab/abstract/10.1103/PhysRevAccelBeams.23.124801">Sample-efficient reinforcement learning for CERN accelerator control</a> - Beam trajectory steering using RL with a focus on sample-efficient training.</li>
 <li><a href="https://arxiv.org/abs/2010.08141">Autonomous control of a particle accelerator using deep reinforcement learning</a> - Beam transport through a drift tube linac using RL.</li>
@@ -8189,14 +8189,46 @@ Therefore we have provided a pre-trained policy which can be used for evaluation
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 style="color: #b51f2a">Further Resources</h2>
-<h3 id="Literature">Literature<a class="anchor-link" href="#Literature">¶</a></h3><ul>
-<li><a href="http://incompleteideas.net/book/the-book.html">Reinforcement Learning: An Introduction</a> - Standard text book on RL.</li>
+<h3 id="RL-Books">RL Books<a class="anchor-link" href="#RL-Books">¶</a></h3><ul>
+<li>R. S. Sutton, Reinforcement learning, Second edition. in Adaptive computation and machine learning. Cambridge, Massachusetts: The MIT Press, 2020 <a href="http://incompleteideas.net/book/the-book.html">Reinforcement Learning: An Introduction</a></li>
+<li>A. Agarwal, N. Jiang, S. M. Kakade, W. Sun: Reinforcement Learning: Theory and Algorithms, 2022 <a href="https://rltheorybook.github.io/">https://rltheorybook.github.io/</a></li>
+<li>K. P. Murphy, Probabilistic Machine Learning: An introduction. MIT Press, 2022. <a href="https://probml.github.io/pml-book/book1.html">https://probml.github.io/pml-book/book1.html</a></li>
+<li>K. P. Murphy, Probabilistic Machine Learning: Advanced Topics. MIT Press, 2023. <a href="http://probml.github.io/book2">http://probml.github.io/book2</a></li>
 </ul>
 <h3 id="Packages">Packages<a class="anchor-link" href="#Packages">¶</a></h3><ul>
-<li><a href="https://www.gymlibrary.ml">Gym</a> - Defacto standard for implementing custom environments. Also provides a library of RL tasks widely used for benchmarking.</li>
-<li><a href="https://github.com/DLR-RM/stable-baselines3">Stable Baslines3</a> - Provides reliable, benchmarked and easy-to-use implementations of the most important RL algorithms.</li>
+<li><a href="https://gymnasium.farama.org/index.html">Gymnasium</a> - Defacto standard for implementing custom environments. Also provides a library of RL tasks widely used for benchmarking.</li>
+<li><a href="https://github.com/DLR-RM/stable-baselines3">Stable Baselines3</a> - Provides reliable, benchmarked and easy-to-use implementations of the most important RL algorithms.</li>
 <li><a href="https://docs.ray.io/en/latest/rllib/index.html">Ray RLlib</a> - Part of the <em>Ray</em> Python package providing implementations of various RL algorithms with a focus on distributed training.</li>
 </ul>
+</div>
+</div>
+</div>
+</div></section></section><section><section>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Courses-Online">Courses Online<a class="anchor-link" href="#Courses-Online">¶</a></h3><ul>
+<li>Chelsea Finn (Berkley): <a href="https://cs330.stanford.edu/">Deep Multi-Task and Meta Learning</a></li>
+<li>Sergey Levine (Berkley): <a href="http://rail.eecs.berkeley.edu/deeprlcourse/">Deep Reinforcement Learning</a></li>
+<li>Emma Brunskill (Stanford): <a href="https://web.stanford.edu/class/cs234/index.html">Reinforcement Learning</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+</div>
 </div>
 </div>
 </div>
