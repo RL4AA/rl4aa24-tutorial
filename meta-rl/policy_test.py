@@ -8,12 +8,11 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
-from matplotlib.lines import Line2D
-from matplotlib.patches import Patch
-
 from maml_rl.envs.awake_steering_simulated import AwakeSteering as awake_env
 from maml_rl.envs.helpers import Awake_Benchmarking_Wrapper
 from maml_rl.utils.helpers import get_policy_for_env
+from matplotlib.lines import Line2D
+from matplotlib.patches import Patch
 
 # get default color cycle
 plt_colors = plt.rcParams["axes.prop_cycle"].by_key()["color"]
@@ -389,9 +388,7 @@ def test_policies(
     env = awake_env()
 
     for num_task, _ in enumerate(tasks):
-        if use_task_policy == "meta":
-            policy_file = use_task_policy
-        elif use_task_policy:  # True but not "meta"
+        if use_task_policy:  # True but not "meta"
             policy_file = os.path.join(use_task_policy, f"policy_{num_task}.npy")
         else:
             policy_file = None
