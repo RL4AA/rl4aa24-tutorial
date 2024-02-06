@@ -8,11 +8,12 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
+from matplotlib.lines import Line2D
+from matplotlib.patches import Patch
+
 from maml_rl.envs.awake_steering_simulated import AwakeSteering as awake_env
 from maml_rl.envs.helpers import Awake_Benchmarking_Wrapper
 from maml_rl.utils.helpers import get_policy_for_env
-from matplotlib.lines import Line2D
-from matplotlib.patches import Patch
 
 # get default color cycle
 plt_colors = plt.rcParams["axes.prop_cycle"].by_key()["color"]
