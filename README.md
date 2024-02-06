@@ -6,7 +6,7 @@ Homepage for RL4AA Collaboration: [https://rl4aa.github.io/](https://rl4aa.githu
 
 ## Theory slides for the tutorial
 
-- [Concepts to overcome challenges in applying RL to accelerators](https://indico.scc.kit.edu/event/3746/sessions/3777/attachments/7180/11399/Tutorial_slides_RL4AA24_Simon_Hirlaender.pdf), Simon Hirländer
+- [Concepts to overcome challenges in applying RL to accelerators](https://indico.scc.kit.edu/event/3746/sessions/3777/), Simon Hirländer
 
 ## Python tutorial: meta reinforcement learning implementation example
 
@@ -21,8 +21,17 @@ Homepage for RL4AA Collaboration: [https://rl4aa.github.io/](https://rl4aa.githu
 
 ### Part 1 Meta-RL
 
-The material is contained in the `meta-rl` folder
+The material is located in the `meta-rl` folder.
 
 ```bash
 cd meta-rl
 ```
+
+### Part 2 Model-based RL
+
+The material is located in the `gp-mpc` folder.
+
+```bash
+cd gp-mpc
+```
+
