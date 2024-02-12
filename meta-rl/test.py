@@ -8,14 +8,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import yaml
-from tqdm import trange
-
 from maml_rl.baseline import LinearFeatureBaseline
 from maml_rl.envs.awake_steering_simulated import AwakeSteering as awake_env
 from maml_rl.samplers import MultiTaskSampler
 from maml_rl.utils.helpers import get_input_size, get_policy_for_env
 from maml_rl.utils.reinforcement_learning import get_episode_lengths, get_returns
 from policy_test import _layout_verficication_plot, verify
+from tqdm import trange
 
 
 def save_progress(file_name, data, save_progress_data_dir):
@@ -98,11 +97,8 @@ def main(args):
             policy.load_state_dict(state_dict)
         use_task_policy = logging_path
         meta_policy_location = args.policy
-    elif config["use_task_policy"]:
-        use_task_policy = logging_path
     else:
-        use_task_policy = False
-    print("use_task_policy", use_task_policy)
+        use_task_policy = logging_path
     policy.share_memory()
 
     # Baseline
@@ -187,9 +183,6 @@ if __name__ == "__main__":
         "--use-meta-policy",
         action="store_true",
         help="use the pre-trained meta-policy",
-    )
-    parser.add_argument(
-        "--use-task-policy", action="store_true", help="use the pre-trained task-policy"
     )
     parser.add_argument(
         "--evaluation-tasks",
