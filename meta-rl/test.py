@@ -2,19 +2,18 @@
 import os
 import pickle
 import shutil
-from curses import meta
 
-import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import yaml
+from tqdm import trange
+
 from maml_rl.baseline import LinearFeatureBaseline
 from maml_rl.envs.awake_steering_simulated import AwakeSteering as awake_env
 from maml_rl.samplers import MultiTaskSampler
 from maml_rl.utils.helpers import get_input_size, get_policy_for_env
-from maml_rl.utils.reinforcement_learning import get_episode_lengths, get_returns
+from maml_rl.utils.reinforcement_learning import get_episode_lengths
 from policy_test import _layout_verficication_plot, verify
-from tqdm import trange
 
 
 def save_progress(file_name, data, save_progress_data_dir):
