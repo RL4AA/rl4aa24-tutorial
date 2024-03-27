@@ -1,3 +1,6 @@
+[![DOI](https://zenodo.org/badge/700362904.svg)](https://zenodo.org/doi/10.5281/zenodo.10886639)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
 # 2nd collaboration workshop on Reinforcement Learning for Autonomous Accelerators (RL4AA'24)
 
 This repository contains the material for the second day of the [RL4AA'24](https://indico.scc.kit.edu/event/3746/timetable/#all.detailed) event.
@@ -35,3 +38,24 @@ The material is located in the `gp-mpc` folder.
 cd gp-mpc
 ```
 
+## Citing the tutorial
+
+This tutorial is uploaded to [Zenodo](https://zenodo.org/doi/10.5281/zenodo.10886639).
+Please use the following DOI when citing this code:
+
+```bibtex
+@software{hirlaender_2024_10886639,
+  author       = {
+                    Hirlaender, Simon and
+                    Kaiser, Jan and
+                    Xu, Chenran and
+                    Santamaria Garcia, Andrea
+                 },
+  title        = {Tutorial on Applying Reinforcement Learning to the Particle Accelerator {ARES}},
+  month        = {03},
+  year         = {2024},
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.10886639},
+  url          = {https://doi.org/10.5281/zenodo.10886639}
+}
+```
