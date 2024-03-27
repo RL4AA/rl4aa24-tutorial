@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Hirlaender
+    given-names: Simon
+    affiliation: PLUS University Salzburg
+    orcid: "https://orcid.org/0000-0002-2634-3437"
+  - family-names: Kaiser
+    given-names: Jan
+    affiliation: Deutsches Elektronen-Synchrotron DESY
+    orcid: "https://orcid.org/0000-0003-3445-0678"
+  - family-names: Xu
+    given-names: Chenran
+    affiliation: Karlsruhe Institute of Technology
+    orcid: "https://orcid.org/0000-0002-5034-2207"
+  - family-names: Santamaria Garcia
+    given-names: Andrea
+    affiliation: Karlsruhe Institute of Technology
+    orcid: "https://orcid.org/0000-0002-7498-7640"
+
+title: "Tutorial at the RL4AA'24 Workshop"
+version: 1.0.0
+date-released: 2024-03-27
+url: "https://github.com/RL4AA/rl4aa24-tutorial"
