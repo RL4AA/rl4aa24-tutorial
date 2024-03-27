@@ -51,7 +51,7 @@ Please use the following DOI when citing this code:
                     Xu, Chenran and
                     Santamaria Garcia, Andrea
                  },
-  title        = {Tutorial on Applying Reinforcement Learning to the Particle Accelerator {ARES}},
+  title        = {Tutorial at the RL4AA'24 Workshop},
   month        = {03},
   year         = {2024},
   publisher    = {Zenodo},
