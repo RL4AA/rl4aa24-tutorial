@@ -18,7 +18,7 @@ authors:
     affiliation: Karlsruhe Institute of Technology
     orcid: "https://orcid.org/0000-0002-7498-7640"
 
-title: "Tutorial at the RL4AA'24 Workshop"
+title: "Tutorial on Meta-Reinforcement Learning and GP-MPC at the RL4AA'24 Workshop"
 date-released: 2024-03-27
 url: "https://github.com/RL4AA/rl4aa24-tutorial"
 doi: 10.5281/zenodo.10886639

@@ -1,7 +1,7 @@
 [![DOI](https://zenodo.org/badge/700362904.svg)](https://zenodo.org/doi/10.5281/zenodo.10886639)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-# 2nd collaboration workshop on Reinforcement Learning for Autonomous Accelerators (RL4AA'24)
+# Tutorial on Meta-Reinforcement Learning and GP-MPC at the RL4AA'24 Workshop
 
 This repository contains the material for the second day of the [RL4AA'24](https://indico.scc.kit.edu/event/3746/timetable/#all.detailed) event.
 
@@ -13,7 +13,7 @@ Homepage for RL4AA Collaboration: [https://rl4aa.github.io/](https://rl4aa.githu
 
 ## Python tutorial: meta reinforcement learning implementation example
 
-- Github repository containing the material: [https://github.com/RL4AA/RL4AA24](https://github.com/RL4AA/rl4aa24-tutorial/)
+- GitHub repository containing the material: [https://github.com/RL4AA/RL4AA24](https://github.com/RL4AA/rl4aa24-tutorial/)
 - Tutorial in slide form: [here](https://rl4aa.github.io/rl4aa24-tutorial/)
 
 ## Getting started
@@ -51,7 +51,7 @@ Please use the following DOI when citing this code:
                     Xu, Chenran and
                     Santamaria Garcia, Andrea
                  },
-  title        = {Tutorial at the RL4AA'24 Workshop},
+  title        = {Tutorial on Meta-Reinforcement Learning and GP-MPC at the RL4AA'24 Workshop},
   month        = {03},
   year         = {2024},
   publisher    = {Zenodo},
