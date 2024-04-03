@@ -51,7 +51,7 @@ Please use the following DOI when citing this code:
                     Xu, Chenran and
                     Santamaria Garcia, Andrea
                  },
-  title        = {Tutorial on Meta-Reinforcement Learning and GP-MPC at the RL4AA'24 Workshop},
+  title        = {Tutorial on Meta-Reinforcement Learning and {GP-MPC} at the {RL4AA'24} Workshop},
   month        = {03},
   year         = {2024},
   publisher    = {Zenodo},
