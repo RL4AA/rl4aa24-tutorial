@@ -44,18 +44,14 @@ This tutorial is uploaded to [Zenodo](https://zenodo.org/doi/10.5281/zenodo.1088
 Please use the following DOI when citing this code:
 
 ```bibtex
-@software{hirlaender_2024_10886639,
-  author       = {
-                    Hirlaender, Simon and
-                    Kaiser, Jan and
-                    Xu, Chenran and
-                    Santamaria Garcia, Andrea
-                 },
-  title        = {Tutorial on Meta-Reinforcement Learning and {GP-MPC} at the {RL4AA'24} Workshop},
-  month        = {03},
-  year         = {2024},
-  publisher    = {Zenodo},
-  doi          = {10.5281/zenodo.10886639},
-  url          = {https://doi.org/10.5281/zenodo.10886639}
+@software{hirlaender_2024_10887397,
+    title        = {{Tutorial on Meta-Reinforcement Learning and GP-MPC at the RL4AA'24 Workshop}},
+    author       = {Hirlaender, Simon and Kaiser, Jan and Xu, Chenran and Santamaria Garcia, Andrea},
+    year         = 2024,
+    month        = mar,
+    publisher    = {Zenodo},
+    doi          = {10.5281/zenodo.10887397},
+    url          = {https://doi.org/10.5281/zenodo.10887397},
+    version      = {v1.0.2}
 }
 ```

@@ -1,24 +1,28 @@
-cff-version: 1.2.0
-message: "If you use this software, please cite it as below."
+abstract: '<p>Update the title of the repository: &quot;Tutorial on Meta-Reinforcement
+  Learning and GP-MPC at the RL4AA''24 Workshop&quot;</p>'
 authors:
-  - family-names: Hirlaender
-    given-names: Simon
-    affiliation: PLUS University Salzburg
-    orcid: "https://orcid.org/0000-0002-2634-3437"
-  - family-names: Kaiser
-    given-names: Jan
-    affiliation: Deutsches Elektronen-Synchrotron DESY
-    orcid: "https://orcid.org/0000-0003-3445-0678"
-  - family-names: Xu
-    given-names: Chenran
-    affiliation: Karlsruhe Institute of Technology
-    orcid: "https://orcid.org/0000-0002-5034-2207"
-  - family-names: Santamaria Garcia
-    given-names: Andrea
-    affiliation: Karlsruhe Institute of Technology
-    orcid: "https://orcid.org/0000-0002-7498-7640"
-
-title: "Tutorial on Meta-Reinforcement Learning and {GP-MPC} at the {RL4AA'24} Workshop"
-date-released: 2024-03-27
-url: "https://github.com/RL4AA/rl4aa24-tutorial"
-doi: 10.5281/zenodo.10886639
+- affiliation: PLUS University Salzburg
+  family-names: Hirlaender
+  given-names: Simon
+  orcid: 0000-0002-2634-3437
+- affiliation: Deutsches Elektronen-Synchrotron DESY
+  family-names: Kaiser
+  given-names: Jan
+  orcid: 0000-0003-3445-0678
+- affiliation: Karlsruhe Institute of Technology
+  family-names: Xu
+  given-names: Chenran
+  orcid: 0000-0002-5034-2207
+- affiliation: Karlsruhe Institute of Technology
+  family-names: Santamaria Garcia
+  given-names: Andrea
+  orcid: 0000-0002-7498-7640
+cff-version: 1.2.0
+date-released: '2024-03-27'
+doi: 10.5281/zenodo.10887397
+license:
+- cc-by-4.0
+repository-code: https://github.com/RL4AA/rl4aa24-tutorial/tree/v1.0.2
+title: Tutorial on Meta-Reinforcement Learning and GP-MPC at the RL4AA'24 Workshop
+type: software
+version: v1.0.2
